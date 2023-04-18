@@ -5,6 +5,8 @@ import torch
 from torch import cuda
 from model import MyModel
 
+from data_utils import MyDataset
+
 def get_args():
     parser = argparse.ArgumentParser()
 
@@ -26,9 +28,10 @@ if __name__ == '__main__':
     time['Day'] = data['Day']
     time['Tmstamp'] = data['Tmstamp']
     train = data.drop(columns=['TurbID','Day','Tmstamp'])
-    input = torch.tensor(train[1:16].values).to(torch.float32).reshape((1,15,10)).to(device) # batch_size x sequence length x embedding size
-    attention_mask = torch.ones((1,1,15)).to(device)  # batch_size x 1 x sequence length
-    target = torch.tensor(train[11:12].values).to(device)
+    # input = torch.tensor(train[1:16].values).to(torch.float32).reshape((1,15,10)).to(device) # batch_size x sequence length x embedding size
+    # attention_mask = torch.ones((1,1,15)).to(device)  # batch_size x 1 x sequence length
+    # target = torch.tensor(train[11:12].values).to(device)
+    # output = model(input,attention_mask)
+    # print(output.shape)
 
-    output = model(input,attention_mask)
-    print(output.shape)
+    dataset = MyDataset(data,window_size=15)
