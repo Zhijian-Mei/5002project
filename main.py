@@ -1,5 +1,6 @@
 import argparse
 
+import numpy as np
 import pandas as pd
 import torch
 from torch import cuda, nn
@@ -14,8 +15,7 @@ from data_utils import MyDataset
 
 def get_args():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('-batch_size', type=int, default=1)
+    parser.add_argument('-batch_size', type=int, default=1024)
     parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     torch.set_default_dtype(torch.float64)
     model = MyModel(args).to(device)
 
-    df = pd.read_csv('data/clean_fill_data.csv')[:100000]
+    df = pd.read_csv('data/clean_fill_data.csv')
 
     train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
 
@@ -46,13 +46,15 @@ if __name__ == '__main__':
     eval_set, test_set = data.random_split(eval_set, [0.5, 0.5], generator=torch.Generator().manual_seed(seed))
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_set, batch_size=batch_size)
+    eval_loader = DataLoader(eval_set, batch_size=batch_size,shuffle=False)
 
     epoch = 20
     global_step = 0
-    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
     loss_fct = nn.MSELoss()
+    best_eval_loss = np.inf
     for e in range(epoch):
+        epoch_loss = 0
         model.train()
         for i in tqdm(
                 train_loader,
@@ -69,5 +71,29 @@ if __name__ == '__main__':
             optimizer.step()
             global_step += 1
 
-            if global_step % 1000 == 0:
-                print('loss: ', loss.item())
+            epoch_loss += input_.shape[0] * loss.item()
+
+        print(f'total train loss at epoch {e}: {epoch_loss}')
+
+        model.eval()
+        eval_loss = 0
+        for i in tqdm(
+                eval_loader,
+                # mininterval=200
+        ):
+            input_, output = i[0].to(device), i[1].to(device)
+            attention_mask = torch.ones((input_.shape[0], 1, window_size - 1)).to(device)
+            predict = model(input_, attention_mask)
+
+            loss = loss_fct(predict, output)
+            eval_loss += input_.shape[0] * loss.item()
+
+        print(f'total eval loss at epoch {e}: {eval_loss}')
+        if eval_loss < best_eval_loss:
+            best_eval_loss = eval_loss
+            torch.save({'model': model.state_dict()},f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+            print('saving better checkpoint')
+
+
+
+

@@ -7,6 +7,7 @@ class MyDataset(Dataset):
     def __init__(self,data,window_size = 10):
         self.input = []
         self.output = []
+        self.id = []
         time = pd.DataFrame()
         time['TurbID'] = data['TurbID']
         time['Day'] = data['Day']
@@ -18,10 +19,11 @@ class MyDataset(Dataset):
             for j in range(len(current)-window_size+1):
                 input_ = current[j:j+window_size-1].values
                 output = current[j+window_size-1:j+window_size].values
+                self.id.append(trub_id)
                 self.input.append(input_)
                 self.output.append(output)
     def __len__(self):
         return len(self.input)
 
     def __getitem__(self, idx):
-        return self.input[idx],self.output[idx]
+        return self.input[idx],self.output[idx],self.id[idx]
