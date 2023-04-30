@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('-gpu', type=str, default='7')
     parser.add_argument('-hidden_size', type=int, default=512)
     parser.add_argument('-seed', type=int, default=42)
-    # parser.add_argument('-ws', type=int, default=15)
+    parser.add_argument('-ws', type=int, default=288)
     args = parser.parse_args()
     return args
 
@@ -30,16 +30,16 @@ if __name__ == '__main__':
     gpu = args.gpu
     seed = args.seed
     batch_size = args.batch_size
-
+    ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
     model = MyModel(args).to(device)
 
-    df = pd.read_csv('data/clean_fill_data.csv')
+    df = pd.read_csv('data/clean_fill_data.csv')[:10000]
 
     train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
 
-    dataset = MyDataset(df)
+    dataset = MyDataset(df,ws=ws)
 
     train_set, eval_set = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
     eval_set, test_set = data.random_split(eval_set, [0.5, 0.5], generator=torch.Generator().manual_seed(seed))
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     epoch = 20
     global_step = 0
-    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0005)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.005)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
     for e in range(epoch):
@@ -60,9 +60,13 @@ if __name__ == '__main__':
                 # mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, 1)).to(device)
+            print(input_.shape)
+            print(output.shape)
+            quit()
+            attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
             loss = loss_fct(predict, output)
+
 
             optimizer.zero_grad()
             loss.backward()

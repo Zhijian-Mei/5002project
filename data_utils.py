@@ -4,7 +4,8 @@ from tqdm import trange
 
 
 class MyDataset(Dataset):
-    def __init__(self,data):
+    def __init__(self,data,ws=288):
+        offset = 288+1
         self.input = []
         self.output = []
         self.id = []
@@ -16,9 +17,9 @@ class MyDataset(Dataset):
         for i in trange(len(train)):
             trub_id = i+1
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
-            for j in range(len(current)-289):
-                input_ = current[j:j+1].values
-                output = current[j+1:j+289]['Patv'].values
+            for j in range(len(current)-offset-offset+1):
+                input_ = current[j:j+offset].values
+                output = current[j+offset:j+offset+offset]['Patv'].values
                 self.id.append(trub_id)
                 self.input.append(input_)
                 self.output.append(output)
