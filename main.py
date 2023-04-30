@@ -36,7 +36,7 @@ if __name__ == '__main__':
     torch.set_default_dtype(torch.float64)
     model = MyModel(args).to(device)
 
-    df = pd.read_csv('data/clean_fill_data.csv')[:100000]
+    df = pd.read_csv('data/clean_fill_data.csv')
 
     train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
 
