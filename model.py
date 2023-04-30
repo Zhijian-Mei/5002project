@@ -8,7 +8,7 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.emb = nn.Linear(10,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
-        self.project = nn.Linear(512,288)
+        self.project = nn.Linear(args.hidden_size,args.ws)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
