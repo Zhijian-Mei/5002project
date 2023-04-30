@@ -11,6 +11,7 @@ class MyModel(nn.Module):
         self.linear = nn.Linear(args.ws-1,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+        input_tensor
         encoded = self.extract(input_tensor,attention_mask)
         size = encoded.shape
         encoded = encoded.reshape((size[0],size[2],size[1]))

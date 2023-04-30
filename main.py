@@ -62,6 +62,9 @@ if __name__ == '__main__':
         ):
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, window_size - 1)).to(device)
+            print(input_.shape,output.shape)
+            print(attention_mask.shape)
+            quit()
             predict = model(input_, attention_mask)
 
             loss = loss_fct(predict, output)
