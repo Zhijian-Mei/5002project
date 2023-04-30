@@ -6,14 +6,16 @@ class MyModel(nn.Module):
 
     def __init__(self,args):
         super(MyModel, self).__init__()
-
-        self.extract = BERT(10,args.hidden_size)
+        self.emb = nn.Linear(10,args.hidden_size)
+        self.extract = BERT(args.hidden_size,args.hidden_size)
         self.linear = nn.Linear(args.ws-1,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         encoded = self.extract(input_tensor,attention_mask)
         size = encoded.shape
         encoded = encoded.reshape((size[0],size[2],size[1]))
+        print(encoded.shape)
+        quit()
         encoded = self.linear(encoded)
         size = encoded.shape
         encoded = encoded.reshape((size[0], size[2], size[1]))
@@ -97,7 +99,6 @@ class BERT(nn.Module):
 
     def __init__(self, dim_inp, dim_out, attention_heads=4):
         super(BERT, self).__init__()
-
         self.encoder = Encoder(dim_inp, dim_out, attention_heads)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor=None):

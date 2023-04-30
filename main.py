@@ -16,7 +16,7 @@ from data_utils import MyDataset
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-batch_size', type=int, default=1024)
-    parser.add_argument('-gpu', type=str, default='0')
+    parser.add_argument('-gpu', type=str, default='7')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=15)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     epoch = 20
     global_step = 0
-    optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
     for e in range(epoch):
