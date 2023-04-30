@@ -15,7 +15,7 @@ from data_utils import MyDataset
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=1024)
+    parser.add_argument('-batch_size', type=int, default=64)
     parser.add_argument('-gpu', type=str, default='7')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
@@ -62,9 +62,6 @@ if __name__ == '__main__':
         ):
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, 1)).to(device)
-            print(input_.shape,output.shape)
-            print(attention_mask.shape)
-            quit()
             predict = model(input_, attention_mask)
 
             loss = loss_fct(predict, output)
