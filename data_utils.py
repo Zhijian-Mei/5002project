@@ -16,7 +16,7 @@ class MyDataset(Dataset):
         for i in trange(len(train)):
             trub_id = i+1
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
-            for j in range(len(current)-289):
+            for j in range(len(current)-288):
                 input_ = current[j:j+1].values
                 output = current[j+1:j+289].values
                 self.id.append(trub_id)
