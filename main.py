@@ -61,7 +61,7 @@ if __name__ == '__main__':
                 # mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, window_size - 1)).to(device)
+            attention_mask = torch.ones((input_.shape[0], 1, 1)).to(device)
             print(input_.shape,output.shape)
             print(attention_mask.shape)
             quit()
