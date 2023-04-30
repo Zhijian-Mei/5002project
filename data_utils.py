@@ -18,7 +18,7 @@ class MyDataset(Dataset):
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
             for j in range(len(current)-289):
                 input_ = current[j:j+1].values
-                output = current[j+1:j+289].values
+                output = current[j+1:j+289]
                 print(output)
                 quit()
                 self.id.append(trub_id)
