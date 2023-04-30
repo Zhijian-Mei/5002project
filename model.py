@@ -8,29 +8,19 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.emb = nn.Linear(10,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
-        self.linear = nn.Linear(args.ws-1,1)
+        self.project = nn.Linear(512,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
-        print(encoded.shape)
-        quit()
-        size = encoded.shape
-        encoded = encoded.reshape((size[0],size[2],size[1]))
-        print(encoded.shape)
-        quit()
-        encoded = self.linear(encoded)
-        size = encoded.shape
-        encoded = encoded.reshape((size[0], size[2], size[1]))
+        encoded = self.project(encoded)
         return encoded
 
     def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+        input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
-        size = encoded.shape
-        encoded = encoded.reshape((size[0],size[2],size[1]))
-        encoded = self.linear(encoded)
-        size = encoded.shape
-        encoded = encoded.reshape((size[0], size[2], size[1]))
+        encoded = self.project(encoded)
+
 
 
 
