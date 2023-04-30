@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('-gpu', type=str, default='7')
     parser.add_argument('-hidden_size', type=int, default=512)
     parser.add_argument('-seed', type=int, default=42)
-    parser.add_argument('-ws', type=int, default=15)
+    # parser.add_argument('-ws', type=int, default=15)
     args = parser.parse_args()
     return args
 
@@ -29,7 +29,6 @@ if __name__ == '__main__':
     print(args)
     gpu = args.gpu
     seed = args.seed
-    window_size = args.ws
     batch_size = args.batch_size
 
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
@@ -40,7 +39,7 @@ if __name__ == '__main__':
 
     train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
 
-    dataset = MyDataset(df, window_size=window_size)
+    dataset = MyDataset(df)
 
     train_set, eval_set = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
     eval_set, test_set = data.random_split(eval_set, [0.5, 0.5], generator=torch.Generator().manual_seed(seed))

@@ -4,7 +4,7 @@ from tqdm import trange
 
 
 class MyDataset(Dataset):
-    def __init__(self,data,window_size = 10):
+    def __init__(self,data):
         self.input = []
         self.output = []
         self.id = []

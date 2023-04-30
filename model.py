@@ -22,6 +22,7 @@ class MyModel(nn.Module):
         encoded = self.project(encoded)
 
 
+
 class AttentionHead(nn.Module):
 
     def __init__(self, dim_inp, dim_out):
