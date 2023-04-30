@@ -15,7 +15,7 @@ from data_utils import MyDataset
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=64)
+    parser.add_argument('-batch_size', type=int, default=1024)
     parser.add_argument('-gpu', type=str, default='7')
     parser.add_argument('-hidden_size', type=int, default=512)
     parser.add_argument('-seed', type=int, default=42)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     torch.set_default_dtype(torch.float64)
     model = MyModel(args).to(device)
 
-    df = pd.read_csv('data/clean_fill_data.csv')[:10000]
+    df = pd.read_csv('data/clean_fill_data.csv')[:100000]
 
     train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
 
@@ -60,9 +60,6 @@ if __name__ == '__main__':
                 # mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
-            print(input_.shape)
-            print(output.shape)
-            quit()
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
             loss = loss_fct(predict, output)
