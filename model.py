@@ -53,7 +53,7 @@ class AttentionHead(nn.Module):
         scale = query.size(1) ** 0.5
         scores = torch.bmm(query, key.transpose(1, 2)) / scale
 
-        attention_mask.int()
+        attention_mask = attention_mask.int()
         scores = scores.masked_fill_(attention_mask, -1e9)
         attn = f.softmax(scores, dim=-1)
         context = torch.bmm(attn, value)
