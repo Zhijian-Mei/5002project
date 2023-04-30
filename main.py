@@ -62,7 +62,6 @@ if __name__ == '__main__':
         ):
             input_, output = i[0].to(device), i[1].to(device)
             print(output.shape)
-            quit()
             attention_mask = torch.ones((input_.shape[0], 1, 1)).to(device)
             predict = model(input_, attention_mask)
 
