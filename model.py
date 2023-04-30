@@ -8,7 +8,7 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.emb = nn.Linear(10,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
-        self.project = nn.Linear(512,1)
+        self.project = nn.Linear(512,288)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
@@ -20,9 +20,6 @@ class MyModel(nn.Module):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
         encoded = self.project(encoded)
-
-
-
 
 
 class AttentionHead(nn.Module):
