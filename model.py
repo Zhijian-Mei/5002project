@@ -13,7 +13,7 @@ class MyModel(nn.Module):
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
-        encoded = self.project(encoded)
+        encoded = self.project(encoded).squeeze()
         return encoded
 
     def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
