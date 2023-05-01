@@ -34,7 +34,7 @@ if __name__ == '__main__':
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
 
-    df = pd.read_csv('data/clean_fill_data.csv')[:100000]
+    df = pd.read_csv('data/clean_fill_data.csv')
     subset = ['TurbID','Wspd','Wdir','Prtv','Patv']
     df = df[subset]
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             predict = model(input_, attention_mask)
 
             loss = loss_fct(predict, output)
-            print(loss.item())
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
