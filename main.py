@@ -52,6 +52,7 @@ if __name__ == '__main__':
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.005)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
+    count = 0
     for e in range(epoch):
         epoch_loss = 0
         model.train()
@@ -71,11 +72,13 @@ if __name__ == '__main__':
             global_step += 1
 
             epoch_loss += input_.shape[0] * loss.item()
+            count += input_.shape[0]
 
-        print(f'total train loss at epoch {e}: {epoch_loss}')
+        print(f'average train loss at epoch {e}: {epoch_loss/count}')
 
         model.eval()
         eval_loss = 0
+        count = 0
         for i in tqdm(
                 eval_loader,
                 # mininterval=200
@@ -86,7 +89,9 @@ if __name__ == '__main__':
 
             loss = loss_fct(predict, output)
             eval_loss += input_.shape[0] * loss.item()
+            count += input_.shape[0]
 
+        eval_loss = eval_loss/count
         print(f'total eval loss at epoch {e}: {eval_loss}')
         if eval_loss < best_eval_loss:
             best_eval_loss = eval_loss
