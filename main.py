@@ -54,7 +54,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
     eval_loader = DataLoader(eval_set, batch_size=batch_size,shuffle=False)
 
-    epoch = 20
+    epoch = 50
     global_step = 0
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0005)
     loss_fct = nn.MSELoss()
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         model.train()
         for i in tqdm(
                 train_loader,
-                # mininterval=200
+                mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
@@ -87,7 +87,7 @@ if __name__ == '__main__':
         count = 0
         for i in tqdm(
                 eval_loader,
-                # mininterval=200
+                mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
