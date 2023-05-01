@@ -12,17 +12,15 @@ class MyModel(nn.Module):
         self.emb = nn.Linear(input_size,args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
         self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True).to(device)
-        # self.project = nn.Linear(args.hidden_size,1)
+        self.out = nn.Linear(args.hidden_size,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
-        print(encoded.shape)
         h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         output,(hn, cn) = self.project(encoded,(h0, c0))
-        print(output.shape)
-        quit()
+        output = self.out(output)
         return output
 
     def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
