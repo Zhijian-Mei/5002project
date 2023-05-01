@@ -20,7 +20,7 @@ class MyModel(nn.Module):
         h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         output,(hn, cn) = self.project(encoded,(h0, c0))
-        output = self.out(output)
+        output = self.out(output).squeeze()
         return output
 
     def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
