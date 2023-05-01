@@ -67,10 +67,8 @@ if __name__ == '__main__':
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
-            print(predict.shape)
-            quit()
-            loss = loss_fct(predict, output)
 
+            loss = loss_fct(predict, output)
 
             optimizer.zero_grad()
             loss.backward()
