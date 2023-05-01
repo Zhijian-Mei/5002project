@@ -4,20 +4,26 @@ import torch.nn.functional as f
 
 class MyModel(nn.Module):
 
-    def __init__(self,args,input_size):
+    def __init__(self,args,input_size,device):
         super(MyModel, self).__init__()
-        self.emb = nn.Linear(input_size,args.hidden_size)
-        self.extract = BERT(args.hidden_size,args.hidden_size)
-        self.project = nn.LSTM(10, 20, 2)
+        self.device = device
+        self.args = args
+        self.lstm_layers = 2
+        self.emb = nn.Linear(input_size,args.hidden_size).to(device)
+        self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
+        self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True).to(device)
         # self.project = nn.Linear(args.hidden_size,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
         print(encoded.shape)
+        h0 = torch.zeros(encoded.shape[0], self.lstm_layers, self.args.hidden_size).to(self.device)
+        c0 = torch.zeros(encoded.shape[0], self.lstm_layers, self.args.hidden_size).to(self.device)
+        output,(hn, cn) = self.project(encoded,(h0, c0))
+        print(output.shape)
         quit()
-        encoded = self.project(encoded).squeeze()
-        return encoded
+        return output
 
     def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)

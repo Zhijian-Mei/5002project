@@ -39,7 +39,7 @@ if __name__ == '__main__':
     subset = ['TurbID','Wspd','Wdir','Prtv','Patv']
     df = df[subset]
 
-    model = MyModel(args,len(subset)-1).to(device)
+    model = MyModel(args,len(subset)-1,device)
 
     train = df
 
