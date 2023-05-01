@@ -40,7 +40,6 @@ if __name__ == '__main__':
 
     model = MyModel(args,len(subset)-1).to(device)
 
-
     train = df
 
     dataset = MyDataset(train,ws=ws)
