@@ -18,8 +18,8 @@ class MyDataset(Dataset):
             trub_id = i+1
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
             for j in range(len(current)-offset-offset+1):
-                input_ = current[j:j+offset].values
-                output = current[j+offset:j+offset+offset]['Patv'].values
+                input_ = current[j:j+offset]
+                output = current[j+offset:j+offset+offset]['Patv']
                 print(input_)
                 print(output)
                 quit()
