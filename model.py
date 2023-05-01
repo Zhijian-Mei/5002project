@@ -4,9 +4,9 @@ import torch.nn.functional as f
 from transformers import BertModel,BertConfig
 class MyModel(nn.Module):
 
-    def __init__(self,args):
+    def __init__(self,args,input_size):
         super(MyModel, self).__init__()
-        self.emb = nn.Linear(10,args.hidden_size)
+        self.emb = nn.Linear(input_size,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
         self.project = nn.Linear(args.hidden_size,1)
 

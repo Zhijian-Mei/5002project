@@ -9,11 +9,11 @@ class MyDataset(Dataset):
         self.input = []
         self.output = []
         self.id = []
-        time = pd.DataFrame()
-        time['TurbID'] = data['TurbID']
-        time['Day'] = data['Day']
-        time['Tmstamp'] = data['Tmstamp']
-        train = list(data.drop(columns=['Day','Tmstamp']).groupby('TurbID'))
+        # time = pd.DataFrame()
+        # time['TurbID'] = data['TurbID']
+        # time['Day'] = data['Day']
+        # time['Tmstamp'] = data['Tmstamp']
+        train = list(data.groupby('TurbID'))
         for i in trange(len(train)):
             trub_id = i+1
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)

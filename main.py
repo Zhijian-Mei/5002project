@@ -33,13 +33,17 @@ if __name__ == '__main__':
     ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
-    model = MyModel(args).to(device)
 
     df = pd.read_csv('data/clean_fill_data.csv')
+    subset = ['TurbID','Wspd','Wdir','Prtv','Patv']
+    df = df[subset]
 
-    train = df.drop(columns=['TurbID', 'Day', 'Tmstamp'])
+    model = MyModel(args,len(subset)-1).to(device)
 
-    dataset = MyDataset(df,ws=ws)
+
+    train = df
+
+    dataset = MyDataset(train,ws=ws)
 
     train_set, eval_set = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
     eval_set, test_set = data.random_split(eval_set, [0.5, 0.5], generator=torch.Generator().manual_seed(seed))
@@ -61,6 +65,9 @@ if __name__ == '__main__':
                 # mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
+            print(input_.shape)
+            print(output.shape)
+            quit()
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
             loss = loss_fct(predict, output)
