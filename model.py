@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as f
+
 class MyModel(nn.Module):
 
     def __init__(self,args,input_size):
@@ -10,8 +11,6 @@ class MyModel(nn.Module):
         self.project = nn.Linear(args.hidden_size,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
-        print(input_tensor.shape)
-        quit()
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
         encoded = self.project(encoded).squeeze()
