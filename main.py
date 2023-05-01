@@ -20,6 +20,7 @@ def get_args():
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
+    parser.add_argument('-debug', type=int, default=0)
     args = parser.parse_args()
     return args
 
@@ -34,8 +35,10 @@ if __name__ == '__main__':
     ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
-
-    df = pd.read_csv('data/clean_fill_data.csv')
+    if args.debug:
+        df = pd.read_csv('data/clean_fill_data.csv')[:10000]
+    else:
+        df = pd.read_csv('data/clean_fill_data.csv')
     subset = ['TurbID','Wspd','Wdir','Prtv','Patv']
     df = df[subset]
 
@@ -67,7 +70,9 @@ if __name__ == '__main__':
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
-
+            print(predict.shape)
+            print(output.shape)
+            quit()
             loss = loss_fct(predict, output)
 
             optimizer.zero_grad()
