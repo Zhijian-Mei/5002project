@@ -8,11 +8,14 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.emb = nn.Linear(input_size,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
-        self.project = nn.Linear(args.hidden_size,1)
+        self.project = nn.LSTM()
+        # self.project = nn.Linear(args.hidden_size,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
+        print(encoded.shape)
+        quit()
         encoded = self.project(encoded).squeeze()
         return encoded
 
