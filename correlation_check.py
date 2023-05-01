@@ -1,7 +1,8 @@
 import pandas as pd
 
 df = pd.read_csv('data/clean_fill_data.csv')
-
+print(df.drop(columns=['TurbID','Day']).corr(method='pearson').loc['Patv'])
+quit()
 groups = df.groupby(['TurbID'])
 
 for group in groups:
