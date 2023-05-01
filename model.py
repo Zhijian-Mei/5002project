@@ -8,7 +8,7 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.device = device
         self.args = args
-        self.lstm_layers = 2
+        self.lstm_layers = 1
         self.emb = nn.Linear(input_size,args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
         self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True).to(device)
