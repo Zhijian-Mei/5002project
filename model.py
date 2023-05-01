@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 import torch.nn.functional as f
-from transformers import BertModel,BertConfig
 class MyModel(nn.Module):
 
     def __init__(self,args,input_size):
