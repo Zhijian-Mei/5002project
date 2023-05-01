@@ -69,7 +69,7 @@ if __name__ == '__main__':
             predict = model(input_, attention_mask)
 
             loss = loss_fct(predict, output)
-
+            print(loss.item())
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
