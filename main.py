@@ -25,6 +25,7 @@ def get_args():
 
 
 if __name__ == '__main__':
+    torch.backends.cudnn.enabled = False
     args = get_args()
     print(args)
     gpu = args.gpu
