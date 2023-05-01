@@ -9,7 +9,7 @@ class MyModel(nn.Module):
         self.emb = nn.Linear(input_size,args.hidden_size)
         self.extract = BERT(args.hidden_size,args.hidden_size)
         self.project = nn.LSTM(2,3,batch_first=True)
-        self.project = nn.Linear(args.hidden_size,1)
+        # self.project = nn.Linear(args.hidden_size,1)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
