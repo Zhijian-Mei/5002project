@@ -8,7 +8,7 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.device = device
         self.args = args
-        self.lstm_layers = 1
+        self.lstm_layers = 2
         self.emb = nn.Linear(input_size,args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
         self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=True).to(device)
@@ -17,9 +17,9 @@ class MyModel(nn.Module):
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor,attention_mask)
-        # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
-        # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
-        output,(hn, cn) = self.project(encoded)
+        h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
+        c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
+        output,(hn, cn) = self.project(encoded,(h0, c0))
         output = self.out(output).squeeze()
         return output
 
