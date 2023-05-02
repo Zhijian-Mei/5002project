@@ -9,10 +9,11 @@ class MyModel(nn.Module):
         self.device = device
         self.args = args
         self.lstm_layers = 1
+        self.bidirectional = True
         self.emb = nn.Linear(input_size,args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
-        self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=True).to(device)
-        self.out = nn.Linear(args.hidden_size,1).to(device)
+        self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=self.bidirectional).to(device)
+        self.out = nn.Linear(args.hidden_size*2 if self.bidirectional else args.hidden_size,1).to(device)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
