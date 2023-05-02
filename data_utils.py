@@ -14,6 +14,7 @@ class MyDataset(Dataset):
         # time['Day'] = data['Day']
         # time['Tmstamp'] = data['Tmstamp']
         train = list(data.groupby('TurbID'))
+        print('loading data')
         for i in trange(len(train)):
             trub_id = i+1
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
