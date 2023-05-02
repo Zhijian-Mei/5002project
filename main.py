@@ -47,7 +47,7 @@ if __name__ == '__main__':
     train = df
 
     dataset = MyDataset(train,ws=ws)
-    
+
     train_set, eval_set,test_set = data.random_split(dataset, [0.8, 0.1, 0.1], generator=torch.Generator().manual_seed(seed))
 
 

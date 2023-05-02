@@ -20,6 +20,9 @@ class MyDataset(Dataset):
             for j in range(len(current)-offset-offset+1):
                 input_ = current[j:j+offset].values
                 output = current[j+offset:j+offset+offset]['Patv'].values
+                print(input_.shape)
+                print(output.shape)
+                quit()
                 self.id.append(trub_id)
                 self.input.append(input_)
                 self.output.append(output)
