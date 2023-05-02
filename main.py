@@ -36,7 +36,7 @@ if __name__ == '__main__':
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
     if args.debug:
-        df = pd.read_csv('data/clean_fill_data.csv')[:10000]
+        df = pd.read_csv('data/clean_fill_data.csv')[:100000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
     subset = ['TurbID','Wspd','Wdir','Patv']
