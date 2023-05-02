@@ -39,7 +39,7 @@ if __name__ == '__main__':
         df = pd.read_csv('data/clean_fill_data.csv')[:10000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
-    subset = ['TurbID','Wspd','Wdir','Prtv','Patv']
+    subset = ['TurbID','Wspd','Wdir','Patv']
     df = df[subset]
 
     model = MyModel(args,len(subset)-1,device)
