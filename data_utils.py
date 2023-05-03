@@ -24,6 +24,7 @@ class MyDataset(Dataset):
                 self.id.append(trub_id)
                 self.input.append(input_)
                 self.output.append(output)
+
     def __len__(self):
         return len(self.input)
 

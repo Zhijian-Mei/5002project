@@ -2,29 +2,31 @@ import torch
 from torch import nn
 import torch.nn.functional as f
 
+
 class MyModel(nn.Module):
 
-    def __init__(self,args,input_size,device):
+    def __init__(self, args, input_size, device):
         super(MyModel, self).__init__()
         self.device = device
         self.args = args
         self.lstm_layers = 2
         self.bidirectional = True
-        self.emb = nn.Linear(input_size,args.hidden_size).to(device)
-        self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
+        self.emb = nn.Linear(input_size, args.hidden_size).to(device)
+        self.extract = BERT(args.hidden_size, args.hidden_size).to(device)
         # self.projectUp1 = nn.Linear(args.hidden_size,512).to(device)
         # self.projectUp2 = nn.Linear(512,1024).to(device)
         # self.out = nn.Linear(1024,1).to(device)
         # self.dropout = nn.Dropout(0.1)
-        self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=self.bidirectional).to(device)
-        self.out = nn.Linear(args.hidden_size*2 if self.bidirectional else args.hidden_size,1).to(device)
+        self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers, batch_first=True,
+                               bidirectional=self.bidirectional).to(device)
+        self.out = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
-        encoded = self.extract(input_tensor,attention_mask)
+        encoded = self.extract(input_tensor, attention_mask)
         # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
-        encoded,(hn, cn) = self.project(encoded)
+        encoded, (hn, cn) = self.project(encoded)
         # encoded = self.projectUp1(encoded)
         # encoded = self.dropout(encoded)
         # encoded = self.projectUp2(encoded)
@@ -32,11 +34,10 @@ class MyModel(nn.Module):
         output = self.out(encoded).squeeze()
         return output
 
-    def predict(self,input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+    def predict(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
-        encoded = self.extract(input_tensor,attention_mask)
+        encoded = self.extract(input_tensor, attention_mask)
         encoded = self.project(encoded)
-
 
 
 class AttentionHead(nn.Module):
@@ -75,7 +76,7 @@ class MultiHeadAttention(nn.Module):
         self.linear = nn.Linear(dim_out * num_heads, dim_inp)
         self.norm = nn.LayerNorm(dim_inp)
 
-    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor=None):
+    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         s = [head(input_tensor, attention_mask) for head in self.heads]
         scores = torch.cat(s, dim=-1)
         scores = self.linear(scores)
@@ -97,8 +98,8 @@ class Encoder(nn.Module):
         )
         self.norm = nn.LayerNorm(dim_inp)
 
-    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor=None):
-        context = self.attention(input_tensor,attention_mask)
+    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+        context = self.attention(input_tensor, attention_mask)
         res = self.feed_forward(context)
         return self.norm(res)
 
@@ -109,7 +110,7 @@ class BERT(nn.Module):
         super(BERT, self).__init__()
         self.encoder = Encoder(dim_inp, dim_out, attention_heads)
 
-    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor=None):
-        encoded = self.encoder(input_tensor,attention_mask)
+    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+        encoded = self.encoder(input_tensor, attention_mask)
 
         return encoded

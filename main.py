@@ -13,6 +13,7 @@ import torch.utils.data as data
 from data_utils import MyDataset
 from evaluation import score
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-batch_size', type=int, default=256)
@@ -41,20 +42,19 @@ if __name__ == '__main__':
         df = pd.read_csv('data/clean_fill_data.csv')[:1000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
-    subset = ['TurbID','Wspd','Wdir','Patv']
+    subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
     df = df[subset]
 
-    model = MyModel(args,len(subset)-2,device)
+    model = MyModel(args, len(subset) - 2, device)
 
     train = df
 
-    dataset = MyDataset(train,ws=ws)
-    print('number of samples: ',len(dataset))
+    dataset = MyDataset(train, ws=ws)
+    print('number of samples: ', len(dataset))
     train_set, eval_set, = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
 
-
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_set, batch_size=batch_size,shuffle=False)
+    eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=False)
 
     epoch = args.epoch
     global_step = 0
@@ -82,7 +82,7 @@ if __name__ == '__main__':
             epoch_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
 
-        print(f'average train loss at epoch {e}: {epoch_loss/count}')
+        print(f'average train loss at epoch {e}: {epoch_loss / count}')
 
         model.eval()
         eval_loss = 0
@@ -106,15 +106,10 @@ if __name__ == '__main__':
             eval_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
 
-
-        eval_loss = eval_loss/count
+        eval_loss = eval_loss / count
 
         print(f'total eval loss at epoch {e}: {eval_loss}')
         if eval_loss < best_eval_loss:
             best_eval_score = eval_loss
-            torch.save({'model': model.state_dict()},f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+            torch.save({'model': model.state_dict()}, f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
             print('saving better checkpoint')
-
-
-
-
