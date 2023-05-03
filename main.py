@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     epoch = 50
     global_step = 0
-    optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0005)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
     count = 0
