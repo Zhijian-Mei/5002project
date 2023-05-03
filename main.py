@@ -22,6 +22,7 @@ def get_args():
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
     parser.add_argument('-lr', type=float, default=0.001)
+    parser.add_argument('-epoch', type=int, default=200)
     args = parser.parse_args()
     return args
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
     eval_loader = DataLoader(eval_set, batch_size=batch_size,shuffle=False)
 
-    epoch = 50
+    epoch = args.epoch
     global_step = 0
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     loss_fct = nn.MSELoss()
