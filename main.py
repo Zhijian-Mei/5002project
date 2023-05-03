@@ -17,10 +17,11 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-batch_size', type=int, default=512)
     parser.add_argument('-gpu', type=str, default='7')
-    parser.add_argument('-hidden_size', type=int, default=32)
+    parser.add_argument('-hidden_size', type=int, default=64)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
+    parser.add_argument('-lr', type=float, default=0.001)
     args = parser.parse_args()
     return args
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 
     epoch = 50
     global_step = 0
-    optimizer = torch.optim.AdamW(model.parameters(), lr=0.0005)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
     count = 0
