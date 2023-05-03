@@ -15,13 +15,13 @@ from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=512)
-    parser.add_argument('-gpu', type=str, default='7')
+    parser.add_argument('-batch_size', type=int, default=256)
+    parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
-    parser.add_argument('-lr', type=float, default=0.001)
+    parser.add_argument('-lr', type=float, default=0.005)
     parser.add_argument('-epoch', type=int, default=200)
     args = parser.parse_args()
     return args
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     subset = ['TurbID','Wspd','Wdir','Patv']
     df = df[subset]
 
-    model = MyModel(args,len(subset)-1,device)
+    model = MyModel(args,len(subset)-2,device)
 
     train = df
 
@@ -97,14 +97,15 @@ if __name__ == '__main__':
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
 
-            print(predict.cpu().detach().numpy())
-            print(output.cpu().detach().numpy())
+            # print(predict.cpu().detach().numpy())
+            # print(output.cpu().detach().numpy())
             # print(predict.shape)
             # quit()
 
             loss = loss_fct(predict, output)
             eval_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
+
 
         eval_loss = eval_loss/count
 
