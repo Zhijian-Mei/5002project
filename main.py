@@ -93,12 +93,12 @@ if __name__ == '__main__':
                 eval_loader,
                 mininterval=200
         ):
-            input_, output = i[0].to(device), i[1]
+            input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
 
             print(predict.cpu().detach().numpy())
-            print(output.numpy())
+            print(output.cpu().detach().numpy())
             # print(predict.shape)
             # quit()
 
