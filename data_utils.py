@@ -20,7 +20,7 @@ class MyDataset(Dataset):
             current = train[i][1].drop(columns=['TurbID']).reset_index(drop=True)
             for j in range(len(current)-offset-offset+1):
                 input_ = current[j:j+offset].values
-                output = current[j+offset:j+offset+offset]['Patv'].values
+                output = current[j+offset:j+offset+offset]['Patv'].values / 100
                 self.id.append(trub_id)
                 self.input.append(input_)
                 self.output.append(output)

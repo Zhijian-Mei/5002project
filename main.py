@@ -20,7 +20,7 @@ def get_args():
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
-    parser.add_argument('-debug', type=int, default=0)
+    parser.add_argument('-debug', type=int, default=1)
     args = parser.parse_args()
     return args
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
     if args.debug:
-        df = pd.read_csv('data/clean_fill_data.csv')[:20000]
+        df = pd.read_csv('data/clean_fill_data.csv')[:2000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
     subset = ['TurbID','Wspd','Wdir','Patv']
