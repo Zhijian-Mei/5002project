@@ -15,7 +15,7 @@ class MyModel(nn.Module):
         self.projectUp1 = nn.Linear(args.hidden_size,512).to(device)
         self.projectUp2 = nn.Linear(512,1024).to(device)
         self.out = nn.Linear(1024,1).to(device)
-        self.dropout = nn.Dropout(0.25)
+        self.dropout = nn.Dropout(0.1)
         # self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=self.bidirectional).to(device)
         # self.out = nn.Linear(args.hidden_size*2 if self.bidirectional else args.hidden_size,1).to(device)
 
