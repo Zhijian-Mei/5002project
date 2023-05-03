@@ -29,7 +29,6 @@ df['TurbID'] = data['TurbID']
 groups = df.groupby(['TurbID'])
 mean, std = groups.transform("mean"), groups.transform("std")
 
-
 ### for store mean and std for prediction
 # column_names = list(mean.columns)
 # column_names.append('TurbID')
