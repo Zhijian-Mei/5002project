@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     dataset = MyDataset(train,ws=ws)
     print('number of samples: ',len(dataset))
-    train_set, eval_set,test_set = data.random_split(dataset, [0.8, 0.1, 0.1], generator=torch.Generator().manual_seed(seed))
+    train_set, eval_set, = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
 
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
