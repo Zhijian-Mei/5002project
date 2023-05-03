@@ -11,7 +11,7 @@ from tqdm import tqdm
 from model import MyModel
 import torch.utils.data as data
 from data_utils import MyDataset
-
+from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     global_step = 0
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     loss_fct = nn.MSELoss()
-    best_eval_loss = np.inf
+    best_eval_score = np.inf
     count = 0
     for e in range(epoch):
         epoch_loss = 0
@@ -85,8 +85,10 @@ if __name__ == '__main__':
         print(f'average train loss at epoch {e}: {epoch_loss/count}')
 
         model.eval()
-        eval_loss = 0
+        eval_score = 0
         count = 0
+        predicts = []
+        labels = []
         for i in tqdm(
                 eval_loader,
                 mininterval=200
@@ -95,15 +97,20 @@ if __name__ == '__main__':
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
 
-            loss = loss_fct(predict, output)
-            eval_loss += input_.shape[0] * loss.item()
-            count += input_.shape[0]
+            print(predict)
+            print(predict.shape)
+            quit()
 
-        eval_loss = eval_loss/count
-        print(f'total eval loss at epoch {e}: {eval_loss}')
-        if eval_loss < best_eval_loss:
-            best_eval_loss = eval_loss
-            torch.save({'model': model.state_dict()},f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+            # loss = loss_fct(predict, output)
+            # eval_loss += input_.shape[0] * loss.item()
+            # count += input_.shape[0]
+        #
+        # eval_loss = eval_loss/count
+        eval_score = score()
+        print(f'total eval loss at epoch {e}: {eval_score}')
+        if eval_score < best_eval_score:
+            best_eval_score = eval_score
+            torch.save({'model': model.state_dict()},f'checkpoint/best_epoch{e}_loss_{round(best_eval_score, 3)}.pt')
             print('saving better checkpoint')
 
 
