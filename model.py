@@ -12,7 +12,7 @@ class MyModel(nn.Module):
         self.bidirectional = True
         self.emb = nn.Linear(input_size,args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size,args.hidden_size).to(device)
-        self.out = nn.Linear(args.ws,1)
+        self.out = nn.Linear(args.ws,1).to(device)
         # self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers,batch_first=True,bidirectional=self.bidirectional).to(device)
         # self.out = nn.Linear(args.hidden_size*2 if self.bidirectional else args.hidden_size,1).to(device)
 
