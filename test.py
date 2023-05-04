@@ -45,63 +45,59 @@ if __name__ == '__main__':
     subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
     df = df[subset]
 
-    checkpoint = torch.load('checkpoint/best_epoch5_loss_inf.pt')
-    model = MyModel(args, len(subset) - 2, device)
-    model.load_state_dict(checkpoint['model'])
+    dfs = list(df.groupby('TurbID'))
 
-    train = df
+    uid = '182f6d11-4c96-40c6-a1b7-6ad9bb715b73'
 
-    dataset = MyDataset(train, ws=ws)
-    print('number of samples: ', len(dataset))
-    train_set, eval_set, = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
+    root_name = f'experiment_{uid}'
 
-    # train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=True)
+    for item in dfs:
+        id = item[0]
+        df = item[1]
 
-    epoch = args.epoch
-    loss_fct = nn.MSELoss(reduction='mean')
-    best_eval_loss = np.inf
-    count = 0
-    for e in range(epoch):
-        epoch_loss = 0
-        model.train()
-        for i in tqdm(
-                eval_loader,
-                mininterval=200
-        ):
-            input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-            predict = model(input_, attention_mask)
-            print(predict)
-            print()
-            print(output)
-            print('loss:')
-            loss = loss_fct(predict, output)
+        # prepare checkpoint folder
+        folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
-            print(loss)
-            print('-------------------------------------------------')
-            # epoch_loss += input_.shape[0] * loss.item()
-            # count += input_.shape[0]
+        checkpoint = torch.load(f'{folder_name}/best_model.pt')
+        model = MyModel(args, len(subset) - 2, device)
+        model.load_state_dict(checkpoint['model'])
 
-        print(f'average test loss at epoch {e}: {epoch_loss / count}')
+        train = df
 
-        model.eval()
-        eval_loss = 0
+        train_size = int(len(train) * 0.8)
+        train_set, eval_set = train[:train_size],train[train_size:]
+
+        print(f'loading data for turbine {id}')
+        # train_dataset = MyDataset(train_set, ws=ws)
+        eval_dataset = MyDataset(eval_set, ws=ws)
+
+        # print('number of train sample: ',len(train_dataset))
+        print('number of eval sample: ',len(eval_dataset))
+
+        # train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
+        eval_loader = DataLoader(eval_dataset, batch_size=batch_size, shuffle=False)
+
+        epoch = args.epoch
+        global_step = 0
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+        loss_fct = nn.MSELoss()
         count = 0
-        predicts = []
-        labels = []
+        eval_loss = 0
+
+        print('start testing')
+
         for i in tqdm(
                 eval_loader,
-                mininterval=200
+                # mininterval=200
         ):
             input_, output = i[0].to(device), i[1].to(device)
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
 
-            # print(predict.cpu().detach().numpy())
-            # print(output.cpu().detach().numpy())
-            # print(predict.shape)
-            # quit()
+            print(predict.cpu().detach().numpy())
+            print(output.cpu().detach().numpy())
+            print(predict.shape)
+            quit()
 
             loss = loss_fct(predict, output)
             eval_loss += input_.shape[0] * loss.item()
@@ -109,8 +105,3 @@ if __name__ == '__main__':
 
         eval_loss = eval_loss / count
 
-        print(f'total eval loss at epoch {e}: {eval_loss}')
-        if eval_loss < best_eval_loss:
-            best_eval_score = eval_loss
-            torch.save({'model': model.state_dict()}, f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
-            print('saving better checkpoint')
