@@ -16,7 +16,7 @@ from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=2)
+    parser.add_argument('-batch_size', type=int, default=1)
     parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=64)
     parser.add_argument('-seed', type=int, default=42)
@@ -49,6 +49,7 @@ if __name__ == '__main__':
 
     root_name = f'experiment_{uid}'
 
+    final_score = 0
     for item in dfs:
         id = item[0]
         df = item[1]
@@ -89,11 +90,8 @@ if __name__ == '__main__':
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
 
-            print(predict.cpu().detach().numpy())
-            print(output.cpu().detach().numpy())
-            print(predict.shape)
-            quit()
-
+            print(predict)
+            print(output)
             loss = loss_fct(predict, output)
             eval_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
