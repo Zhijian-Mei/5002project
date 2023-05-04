@@ -25,7 +25,7 @@ def get_args():
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
     parser.add_argument('-lr', type=float, default=0.005)
-    parser.add_argument('-epoch', type=int, default=10)
+    parser.add_argument('-epoch', type=int, default=200)
     args = parser.parse_args()
     return args
 
@@ -136,4 +136,9 @@ if __name__ == '__main__':
                 best_eval_loss = eval_loss
                 torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
+            else:
+                print(f'finish turbine {id}')
+                print('train next turbine')
+                break
         print(f'finish turbine {id}')
+        print('train next turbine')
