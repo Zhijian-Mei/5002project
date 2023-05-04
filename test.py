@@ -81,7 +81,7 @@ if __name__ == '__main__':
         eval_loss = 0
 
         print('start testing')
-        model.train()
+        model.eval()
         for i in tqdm(
                 eval_loader,
                 # mininterval=200
