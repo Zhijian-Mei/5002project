@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
             loss = loss_fct(predict, output)
 
-            print(loss.item())
+            print(loss)
 
             epoch_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
