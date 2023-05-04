@@ -75,7 +75,7 @@ if __name__ == '__main__':
             print(predict)
             print()
             print(output)
-            print()
+            print('loss:')
             loss = loss_fct(predict, output)
 
             print(loss)
