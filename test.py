@@ -59,8 +59,6 @@ if __name__ == '__main__':
     eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=False)
 
     epoch = args.epoch
-    global_step = 0
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     loss_fct = nn.MSELoss()
     best_eval_loss = np.inf
     count = 0
