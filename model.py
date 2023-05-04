@@ -21,8 +21,6 @@ class MyModel(nn.Module):
         #                        bidirectional=self.bidirectional).to(device)
         # self.out = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
 
-        self.init_weights()
-
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor, attention_mask)
