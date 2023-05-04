@@ -73,20 +73,18 @@ if __name__ == '__main__':
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
             print(predict)
-            print(predict.shape)
+            print('-------------------------------------------------')
             print(output)
-            quit()
+
             loss = loss_fct(predict, output)
 
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            global_step += 1
+            print(loss.item())
+            quit()
 
             epoch_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
 
-        print(f'average train loss at epoch {e}: {epoch_loss / count}')
+        print(f'average test loss at epoch {e}: {epoch_loss / count}')
 
         model.eval()
         eval_loss = 0
