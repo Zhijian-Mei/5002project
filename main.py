@@ -53,12 +53,14 @@ if __name__ == '__main__':
     import uuid
     uid = uuid.uuid4()
 
+    root_name = f'experiment_{uid}'
+    os.system(f'mkdir checkpoint/{root_name}')
     for item in dfs:
         id = item[0]
         df = item[1]
 
         # prepare checkpoint folder
-        folder_name = f'checkpoint/turbine_{id}_{uid}'
+        folder_name = f'checkpoint/{root_name}/turbine_{id}'
         os.system(f'mkdir {folder_name}')
 
         model = MyModel(args, len(subset) - 1, device)
