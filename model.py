@@ -102,11 +102,12 @@ class Encoder(nn.Module):
 
 class BERT(nn.Module):
 
-    def __init__(self, dim_inp, dim_out, attention_heads=1):
+    def __init__(self, dim_inp, dim_out, attention_heads=4, num_blocks = 1):
         super(BERT, self).__init__()
-        self.encoder = Encoder(dim_inp, dim_out, attention_heads)
+        self.module_list = [Encoder(dim_inp, dim_out, attention_heads) for _ in range(num_blocks)]
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
-        encoded = self.encoder(input_tensor, attention_mask)
-
+        for module in self.module_list:
+            encoded = self.encoder(input_tensor, attention_mask)
+        
         return encoded
