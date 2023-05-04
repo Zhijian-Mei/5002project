@@ -108,6 +108,6 @@ class BERT(nn.Module):
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         for module in self.module_list:
-            encoded = self.encoder(input_tensor, attention_mask)
+            encoded = module(input_tensor, attention_mask)
         
         return encoded
