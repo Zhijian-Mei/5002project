@@ -61,7 +61,7 @@ if __name__ == '__main__':
         folder_name = f'checkpoint/turbine_{id}_{uid}'
         os.system(f'mkdir {folder_name}')
 
-        model = MyModel(args, len(subset) - 2, device)
+        model = MyModel(args, len(subset) - 1, device)
 
         train = df
 

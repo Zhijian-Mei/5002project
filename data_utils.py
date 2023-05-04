@@ -10,8 +10,8 @@ class MyDataset(Dataset):
         self.output = []
         current = df.drop(columns=['TurbID']).reset_index(drop=True)
         for j in trange(len(current) - offset - offset + 1):
-            input_ = current[j:j + offset].drop(columns=['Patv']).values
-            output = current[j + offset:j + offset + offset]['Patv'].values / 100
+            input_ = current[j:j + offset].values
+            output = current[j + offset:j + offset + offset]['Patv'].values
             self.input.append(input_)
             self.output.append(output)
 
