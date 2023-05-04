@@ -92,8 +92,8 @@ if __name__ == '__main__':
                 attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
                 predict = model(input_, attention_mask)
 
-                print(predict.detach().cpu().numpy())
-                print(output.detach().cpu().numpy())
+                print(predict.cpu().numpy())
+                print(output.cpu().numpy())
                 quit()
                 score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy())
                 print(score)

@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
                 eval_loss = eval_loss / count
 
-                print(f'total eval loss at epoch {e}: {eval_loss}')
+                print(f'average eval loss at epoch {e}: {eval_loss}')
                 if eval_loss < best_eval_loss:
                     best_eval_loss = eval_loss
                     best_model = model
