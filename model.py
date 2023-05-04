@@ -30,7 +30,6 @@ class MyModel(nn.Module):
         encoded = self.projectUp1(encoded)
         encoded = self.dropout(encoded)
         encoded = self.projectUp2(encoded)
-        encoded = self.dropout(encoded)
         output = self.out(encoded).squeeze()
         return output
 
