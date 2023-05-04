@@ -12,7 +12,7 @@ class MyModel(nn.Module):
         self.lstm_layers = 1
         self.bidirectional = True
         self.emb = nn.Linear(input_size, args.hidden_size).to(device)
-        self.extract = BERT(args.hidden_size, args.hidden_size).to(device)
+        self.extract = BERT(args.hidden_size, args.hidden_size,device)
         self.projectUp1 = nn.Linear(args.hidden_size,512).to(device)
         self.projectUp2 = nn.Linear(512,1024).to(device)
         self.out = nn.Linear(1024,1).to(device)
@@ -101,13 +101,12 @@ class Encoder(nn.Module):
 
 
 class BERT(nn.Module):
-
-    def __init__(self, dim_inp, dim_out, attention_heads=4, num_blocks = 1):
+    def __init__(self, dim_inp, dim_out, device,attention_heads=4, num_blocks = 1):
         super(BERT, self).__init__()
-        self.module_list = [Encoder(dim_inp, dim_out, attention_heads) for _ in range(num_blocks)]
+        self.module_list = [Encoder(dim_inp, dim_out, attention_heads).to(device) for _ in range(num_blocks)]
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         for module in self.module_list:
             encoded = module(input_tensor, attention_mask)
-        
+
         return encoded
