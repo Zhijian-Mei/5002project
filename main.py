@@ -1,4 +1,6 @@
 import argparse
+import os
+import time
 
 import numpy as np
 import pandas as pd
@@ -23,7 +25,7 @@ def get_args():
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
     parser.add_argument('-lr', type=float, default=0.005)
-    parser.add_argument('-epoch', type=int, default=200)
+    parser.add_argument('-epoch', type=int, default=10)
     args = parser.parse_args()
     return args
 
@@ -39,77 +41,91 @@ if __name__ == '__main__':
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
     if args.debug:
-        df = pd.read_csv('data/clean_fill_data.csv')[:1000]
+        df = pd.read_csv('data/clean_fill_data.csv')[:100000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
-    subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
+
+    subset = ['TurbID', 'Wspd', 'Wdir','Prtv', 'Patv']
     df = df[subset]
 
-    model = MyModel(args, len(subset) - 2, device)
+    dfs = list(df.groupby('TurbID'))
 
-    train = df
+    for item in dfs:
+        id = item[0]
+        df = item[1]
 
-    dataset = MyDataset(train, ws=ws)
-    print('number of samples: ', len(dataset))
-    train_set, eval_set, = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
+        # prepare checkpoint folder
+        folder_name = f'checkpoint/turbine_{id}_{time.time()}'
+        os.system(f'mkdir {folder_name}')
+        quit()
+        model = MyModel(args, len(subset) - 2, device)
 
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=False)
+        train = df
 
-    epoch = args.epoch
-    global_step = 0
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    loss_fct = nn.MSELoss()
-    best_eval_loss = np.inf
-    count = 0
-    for e in range(epoch):
-        epoch_loss = 0
-        model.train()
-        for i in tqdm(
-                train_loader,
-                mininterval=200
-        ):
-            input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-            predict = model(input_, attention_mask)
-            loss = loss_fct(predict, output)
+        train_size = int(len(train) * 0.8)
+        train_set, eval_set = train[:train_size],train[train_size:]
 
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            global_step += 1
+        print(f'loading data for turbine {id}')
+        train_dataset = MyDataset(train_set, ws=ws)
+        eval_dataset = MyDataset(eval_set, ws=ws)
 
-            epoch_loss += input_.shape[0] * loss.item()
-            count += input_.shape[0]
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
+        eval_loader = DataLoader(eval_dataset, batch_size=batch_size, shuffle=False)
 
-        print(f'average train loss at epoch {e}: {epoch_loss / count}')
-
-        model.eval()
-        eval_loss = 0
+        epoch = args.epoch
+        global_step = 0
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+        loss_fct = nn.MSELoss()
+        best_eval_loss = np.inf
         count = 0
-        predicts = []
-        labels = []
-        for i in tqdm(
-                eval_loader,
-                mininterval=200
-        ):
-            input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-            predict = model(input_, attention_mask)
+        for e in range(epoch):
+            epoch_loss = 0
+            model.train()
+            for i in tqdm(
+                    train_loader,
+                    mininterval=200
+            ):
+                input_, output = i[0].to(device), i[1].to(device)
+                attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
+                predict = model(input_, attention_mask)
+                loss = loss_fct(predict, output)
 
-            # print(predict.cpu().detach().numpy())
-            # print(output.cpu().detach().numpy())
-            # print(predict.shape)
-            # quit()
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                global_step += 1
 
-            loss = loss_fct(predict, output)
-            eval_loss += input_.shape[0] * loss.item()
-            count += input_.shape[0]
+                epoch_loss += input_.shape[0] * loss.item()
+                count += input_.shape[0]
 
-        eval_loss = eval_loss / count
+            print(f'average train loss at epoch {e}: {epoch_loss / count}')
 
-        print(f'total eval loss at epoch {e}: {eval_loss}')
-        if eval_loss < best_eval_loss:
-            best_eval_score = eval_loss
-            torch.save({'model': model.state_dict()}, f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
-            print('saving better checkpoint')
+            model.eval()
+            eval_loss = 0
+            count = 0
+            predicts = []
+            labels = []
+            for i in tqdm(
+                    eval_loader,
+                    mininterval=200
+            ):
+                input_, output = i[0].to(device), i[1].to(device)
+                attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
+                predict = model(input_, attention_mask)
+
+                # print(predict.cpu().detach().numpy())
+                # print(output.cpu().detach().numpy())
+                # print(predict.shape)
+                # quit()
+
+                loss = loss_fct(predict, output)
+                eval_loss += input_.shape[0] * loss.item()
+                count += input_.shape[0]
+
+            eval_loss = eval_loss / count
+
+            print(f'total eval loss at epoch {e}: {eval_loss}')
+            if eval_loss < best_eval_loss:
+                best_eval_score = eval_loss
+                torch.save({'model': model.state_dict()}, f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+                print('saving better checkpoint')
