@@ -72,6 +72,9 @@ if __name__ == '__main__':
         train_dataset = MyDataset(train_set, ws=ws)
         eval_dataset = MyDataset(eval_set, ws=ws)
 
+        print('number of train sample: ',len(train_dataset))
+        print('number of eval sample: ',len(eval_dataset))
+
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
         eval_loader = DataLoader(eval_dataset, batch_size=batch_size, shuffle=False)
 
