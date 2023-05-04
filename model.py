@@ -9,7 +9,7 @@ class MyModel(nn.Module):
         super(MyModel, self).__init__()
         self.device = device
         self.args = args
-        self.lstm_layers = 1
+        self.lstm_layers = 2
         self.bidirectional = True
         self.emb = nn.Linear(input_size, args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size, args.hidden_size,device)
@@ -100,7 +100,7 @@ class Encoder(nn.Module):
 
 
 class BERT(nn.Module):
-    def __init__(self, dim_inp, dim_out, device,attention_heads=1, num_blocks = 1):
+    def __init__(self, dim_inp, dim_out, device,attention_heads=2, num_blocks = 2):
         super(BERT, self).__init__()
         self.module_list = [Encoder(dim_inp, dim_out, attention_heads).to(device) for _ in range(num_blocks)]
 
