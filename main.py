@@ -25,7 +25,7 @@ def get_args():
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=1)
     parser.add_argument('-lr', type=float, default=0.005)
-    parser.add_argument('-epoch', type=int, default=10)
+    parser.add_argument('-epoch', type=int, default=3)
     args = parser.parse_args()
     return args
 
