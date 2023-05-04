@@ -84,6 +84,7 @@ if __name__ == '__main__':
         loss_fct = nn.MSELoss()
         best_eval_loss = np.inf
         count = 0
+        print('start training')
         for e in range(epoch):
             epoch_loss = 0
             model.train()
