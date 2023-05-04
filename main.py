@@ -86,6 +86,7 @@ if __name__ == '__main__':
         loss_fct = nn.MSELoss()
         best_eval_loss = np.inf
         count = 0
+        best_model = None
         print('start training')
         for e in range(epoch):
             epoch_loss = 0
@@ -137,16 +138,10 @@ if __name__ == '__main__':
             print(f'total eval loss at epoch {e}: {eval_loss}')
             if eval_loss < best_eval_loss:
                 best_eval_loss = eval_loss
+                best_model = model
                 torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
-            else:
-                best_eval_loss = eval_loss
-                torch.save({'model': model.state_dict()},
-                           f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
-                print('saving better checkpoint')
-                print('early stop! ')
-                break
-        torch.save({'model': model.state_dict()},
+        torch.save({'model': best_model.state_dict()},
                    f'{folder_name}/best_model.pt')
         print(f'finish turbine {id}')
         print('train next turbine')
