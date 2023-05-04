@@ -16,7 +16,7 @@ from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=100)
+    parser.add_argument('-batch_size', type=int, default=2)
     parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=True)
 
     epoch = args.epoch
-    loss_fct = nn.MSELoss(reduction ='sum')
+    loss_fct = nn.MSELoss(reduce=False)
     best_eval_loss = np.inf
     count = 0
     for e in range(epoch):
