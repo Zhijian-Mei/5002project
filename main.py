@@ -137,6 +137,11 @@ if __name__ == '__main__':
                 torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
             else:
+                best_eval_loss = eval_loss
+                torch.save({'model': model.state_dict()},
+                           f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+                print('saving better checkpoint')
+                print('early stop! ')
                 print(f'finish turbine {id}')
                 print('train next turbine')
                 break
