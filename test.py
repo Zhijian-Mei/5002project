@@ -81,7 +81,7 @@ if __name__ == '__main__':
         eval_loss = 0
 
         print('start testing')
-        model.eval()
+        model.train()
         for i in tqdm(
                 eval_loader,
                 # mininterval=200
@@ -91,9 +91,9 @@ if __name__ == '__main__':
             predict = model(input_, attention_mask)
 
             print(predict.detach().cpu().numpy())
-            print(output.detach().cpu().numpy()[0])
+            print(output.detach().cpu().numpy())
             quit()
-            score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy()[0])
+            score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy())
             print(score)
             quit()
             loss = loss_fct(predict, output)
