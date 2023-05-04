@@ -136,3 +136,4 @@ if __name__ == '__main__':
                 best_eval_loss = eval_loss
                 torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
+        print(f'finish turbine {id}')
