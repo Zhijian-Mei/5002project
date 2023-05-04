@@ -91,7 +91,7 @@ if __name__ == '__main__':
             predict = model(input_, attention_mask)
 
             print(predict.detach().cpu().numpy())
-            print(output.detach().cpu().numpy())
+            print(output.detach().cpu().numpy()[0])
             quit()
             loss = loss_fct(predict, output)
             eval_loss += input_.shape[0] * loss.item()
