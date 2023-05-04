@@ -16,7 +16,7 @@ from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=2)
+    parser.add_argument('-batch_size', type=int, default=1)
     parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
     torch.set_default_dtype(torch.float64)
     if args.debug:
-        df = pd.read_csv('data/clean_fill_data.csv')[:100000]
+        df = pd.read_csv('data/clean_fill_data.csv')[:10000]
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
     subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
@@ -79,7 +79,6 @@ if __name__ == '__main__':
             loss = loss_fct(predict, output)
 
             print(loss.item())
-            quit()
 
             epoch_loss += input_.shape[0] * loss.item()
             count += input_.shape[0]
