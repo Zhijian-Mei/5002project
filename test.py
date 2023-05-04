@@ -59,7 +59,7 @@ if __name__ == '__main__':
     eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=True)
 
     epoch = args.epoch
-    loss_fct = nn.MSELoss(reduce=False)
+    loss_fct = nn.MSELoss(reduction='mean')
     best_eval_loss = np.inf
     count = 0
     for e in range(epoch):
