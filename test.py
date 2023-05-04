@@ -22,6 +22,7 @@ def get_args():
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=0)
+    parser.add_argument('-uid', type=str, required=True)
     args = parser.parse_args()
     return args
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
     dfs = list(df.groupby('TurbID'))
 
-    uid = 'eff43629-82c3-49a5-a966-b1b35249d7fd'
+    uid = args.uid
 
     root_name = f'experiment_{uid}'
 
