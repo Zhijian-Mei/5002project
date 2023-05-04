@@ -16,7 +16,7 @@ from evaluation import score
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-batch_size', type=int, default=1)
+    parser.add_argument('-batch_size', type=int, default=100)
     parser.add_argument('-gpu', type=str, default='0')
     parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
