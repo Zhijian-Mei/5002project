@@ -45,7 +45,7 @@ if __name__ == '__main__':
     else:
         df = pd.read_csv('data/clean_fill_data.csv')
 
-    subset = ['TurbID', 'Wspd', 'Wdir','Prtv', 'Patv']
+    subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
     df = df[subset]
 
     dfs = list(df.groupby('TurbID'))
