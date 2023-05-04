@@ -36,10 +36,6 @@ class MyModel(nn.Module):
         output = self.out(encoded).squeeze()
         return output
 
-    def predict(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
-        input_tensor = self.emb(input_tensor)
-        encoded = self.extract(input_tensor, attention_mask)
-        encoded = self.project(encoded)
 
 
 class AttentionHead(nn.Module):
