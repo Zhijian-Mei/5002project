@@ -142,8 +142,6 @@ if __name__ == '__main__':
                            f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
                 print('early stop! ')
-                print(f'finish turbine {id}')
-                print('train next turbine')
                 break
         print(f'finish turbine {id}')
         print('train next turbine')
