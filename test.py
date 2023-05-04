@@ -83,23 +83,24 @@ if __name__ == '__main__':
 
         print('start testing')
         model.eval()
-        for i in tqdm(
-                eval_loader,
-                # mininterval=200
-        ):
-            input_, output = i[0].to(device), i[1].to(device)
-            attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-            predict = model(input_, attention_mask)
+        with torch.no_grad():
+            for i in tqdm(
+                    eval_loader,
+                    # mininterval=200
+            ):
+                input_, output = i[0].to(device), i[1].to(device)
+                attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
+                predict = model(input_, attention_mask)
 
-            print(predict.detach().cpu().numpy())
-            print(output.detach().cpu().numpy())
-            quit()
-            score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy())
-            print(score)
-            quit()
-            loss = loss_fct(predict, output)
-            eval_loss += input_.shape[0] * loss.item()
-            count += input_.shape[0]
+                print(predict.detach().cpu().numpy())
+                print(output.detach().cpu().numpy())
+                quit()
+                score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy())
+                print(score)
+                quit()
+                loss = loss_fct(predict, output)
+                eval_loss += input_.shape[0] * loss.item()
+                count += input_.shape[0]
 
-        eval_loss = eval_loss / count
+            eval_loss = eval_loss / count
 

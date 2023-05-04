@@ -115,32 +115,32 @@ if __name__ == '__main__':
             count = 0
             predicts = []
             labels = []
+            with torch.no_grad():
+                for i in tqdm(
+                        eval_loader,
+                        mininterval=200
+                ):
+                    input_, output = i[0].to(device), i[1].to(device)
+                    attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
+                    predict = model(input_, attention_mask)
 
-            for i in tqdm(
-                    eval_loader,
-                    mininterval=200
-            ):
-                input_, output = i[0].to(device), i[1].to(device)
-                attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-                predict = model(input_, attention_mask)
+                    # print(predict.cpu().detach().numpy())
+                    # print(output.cpu().detach().numpy())
+                    # print(predict.shape)
+                    # quit()
 
-                # print(predict.cpu().detach().numpy())
-                # print(output.cpu().detach().numpy())
-                # print(predict.shape)
-                # quit()
+                    loss = loss_fct(predict, output)
+                    eval_loss += input_.shape[0] * loss.item()
+                    count += input_.shape[0]
 
-                loss = loss_fct(predict, output)
-                eval_loss += input_.shape[0] * loss.item()
-                count += input_.shape[0]
+                eval_loss = eval_loss / count
 
-            eval_loss = eval_loss / count
-
-            print(f'total eval loss at epoch {e}: {eval_loss}')
-            if eval_loss < best_eval_loss:
-                best_eval_loss = eval_loss
-                best_model = model
-                torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
-                print('saving better checkpoint')
+                print(f'total eval loss at epoch {e}: {eval_loss}')
+                if eval_loss < best_eval_loss:
+                    best_eval_loss = eval_loss
+                    best_model = model
+                    torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+                    print('saving better checkpoint')
         torch.save({'model': best_model.state_dict()},
                    f'{folder_name}/best_model.pt')
         print(f'finish turbine {id}')
