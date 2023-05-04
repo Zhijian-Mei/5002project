@@ -7,12 +7,14 @@ data = pd.read_csv('data/wtbdata_245days.csv')
 ## handle outliers
 def f(x):
     if x[12] < 0:
-        return [x[0], x[1], x[2], np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 0.0]
-    elif x[3] == 0 and x[4] == 0 and x[5] == 0:
+        return [x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8], x[9], x[10], x[11], 0.0]
+    elif x[12] <= 0 and x[3] > 2.5:
         return [x[0], x[1], x[2], np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
-    elif x[4] > 180 or x[4] < -180:
+    elif x[8] > 89 or x[9] > 89 or x[10] > 89:
         return [x[0], x[1], x[2], np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
     elif x[7] > 720 or x[7] < -720:
+        return [x[0], x[1], x[2], np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
+    elif x[4] > 180 or x[4] < -180:
         return [x[0], x[1], x[2], np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
     else:
         return x
