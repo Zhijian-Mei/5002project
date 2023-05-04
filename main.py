@@ -143,5 +143,7 @@ if __name__ == '__main__':
                 print('saving better checkpoint')
                 print('early stop! ')
                 break
+        torch.save({'model': model.state_dict()},
+                   f'{folder_name}/best_model_{round(best_eval_loss, 3)}.pt')
         print(f'finish turbine {id}')
         print('train next turbine')
