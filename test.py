@@ -73,13 +73,13 @@ if __name__ == '__main__':
             attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
             predict = model(input_, attention_mask)
             print(predict)
-            print('-------------------------------------------------')
+            print()
             print(output)
-
+            print()
             loss = loss_fct(predict, output)
 
             print(loss)
-
+            print('-------------------------------------------------')
             # epoch_loss += input_.shape[0] * loss.item()
             # count += input_.shape[0]
 
