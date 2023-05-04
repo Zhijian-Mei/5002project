@@ -50,14 +50,17 @@ if __name__ == '__main__':
 
     dfs = list(df.groupby('TurbID'))
 
+    import uuid
+    uid = uuid.uuid4()
+
     for item in dfs:
         id = item[0]
         df = item[1]
 
         # prepare checkpoint folder
-        folder_name = f'checkpoint/turbine_{id}_{time.time()}'
+        folder_name = f'checkpoint/turbine_{id}_{uid}'
         os.system(f'mkdir {folder_name}')
-        quit()
+
         model = MyModel(args, len(subset) - 2, device)
 
         train = df
@@ -126,6 +129,6 @@ if __name__ == '__main__':
 
             print(f'total eval loss at epoch {e}: {eval_loss}')
             if eval_loss < best_eval_loss:
-                best_eval_score = eval_loss
-                torch.save({'model': model.state_dict()}, f'checkpoint/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
+                best_eval_loss = eval_loss
+                torch.save({'model': model.state_dict()}, f'{folder_name}/best_epoch{e}_loss_{round(best_eval_loss, 3)}.pt')
                 print('saving better checkpoint')
