@@ -92,6 +92,7 @@ if __name__ == '__main__':
 
             print(predict.detach().cpu().numpy())
             print(output.detach().cpu().numpy()[0])
+            quit()
             score = score(predict.detach().cpu().numpy(),output.detach().cpu().numpy()[0])
             print(score)
             quit()

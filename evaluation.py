@@ -1,9 +1,10 @@
 import numpy as np
-
+np.set_printoptions(suppress=True)
 def score(predict, label):
     ## inputs are two numpy array
-    print(predict.shape)
-    print(label.shape)
+    print(predict)
+    print(label)
+    quit()
     print(label - predict)
     quit()
     left = np.sqrt(np.square(label - predict).mean())
