@@ -58,7 +58,7 @@ if __name__ == '__main__':
         # prepare checkpoint folder
         folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
-        checkpoint = torch.load(f'{folder_name}/best_epoch15_loss_248715.085.pt.pt')
+        checkpoint = torch.load(f'{folder_name}/best_epoch15_loss_248715.085.pt')
         model = MyModel(args, len(subset) - 1, device)
         model.load_state_dict(checkpoint['model'])
 
