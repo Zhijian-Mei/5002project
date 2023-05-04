@@ -80,8 +80,8 @@ if __name__ == '__main__':
 
             print(loss)
 
-            epoch_loss += input_.shape[0] * loss.item()
-            count += input_.shape[0]
+            # epoch_loss += input_.shape[0] * loss.item()
+            # count += input_.shape[0]
 
         print(f'average test loss at epoch {e}: {epoch_loss / count}')
 
