@@ -56,7 +56,7 @@ if __name__ == '__main__':
     train_set, eval_set, = data.random_split(dataset, [0.8, 0.2], generator=torch.Generator().manual_seed(seed))
 
     # train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=False)
+    eval_loader = DataLoader(eval_set, batch_size=batch_size, shuffle=True)
 
     epoch = args.epoch
     loss_fct = nn.MSELoss()
