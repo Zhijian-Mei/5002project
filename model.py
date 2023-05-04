@@ -101,7 +101,7 @@ class Encoder(nn.Module):
 
 
 class BERT(nn.Module):
-    def __init__(self, dim_inp, dim_out, device,attention_heads=4, num_blocks = 1):
+    def __init__(self, dim_inp, dim_out, device,attention_heads=4, num_blocks = 2):
         super(BERT, self).__init__()
         self.module_list = [Encoder(dim_inp, dim_out, attention_heads).to(device) for _ in range(num_blocks)]
 
