@@ -102,7 +102,7 @@ class Encoder(nn.Module):
 
 class BERT(nn.Module):
 
-    def __init__(self, dim_inp, dim_out, attention_heads=4):
+    def __init__(self, dim_inp, dim_out, attention_heads=1):
         super(BERT, self).__init__()
         self.encoder = Encoder(dim_inp, dim_out, attention_heads)
 
