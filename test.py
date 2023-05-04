@@ -22,8 +22,6 @@ def get_args():
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=0)
-    parser.add_argument('-lr', type=float, default=0.005)
-    parser.add_argument('-epoch', type=int, default=200)
     args = parser.parse_args()
     return args
 
@@ -59,7 +57,7 @@ if __name__ == '__main__':
         folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
         checkpoint = torch.load(f'{folder_name}/best_model.pt')
-        model = MyModel(args, len(subset) - 2, device)
+        model = MyModel(args, len(subset) - 1, device)
         model.load_state_dict(checkpoint['model'])
 
         train = df
