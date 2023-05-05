@@ -66,17 +66,20 @@ if __name__ == '__main__':
             df_out = item_out[1]
             current_df_in = df_in[len(df_in)-288:]
             current_df_out = df_out
-            input_ = current_df_in.drop(columns=['Patv','TurbID']).values
-            output_ = current_df_out['Patv'].values
+            input_ = current_df_in.drop(columns=['Patv','TurbID'])
+            output_ = current_df_out['Patv']
+            input_ = input_.fillna(input_.mean()).values
+            output_ = output_.fillna(output_.mean()).values
+
             current_mean = mean_df[mean_df.TurbID == id][['Wspd','Wdir']].values[0]
             current_std = std_df[std_df.TurbID == id][['Wspd','Wdir']].values[0]
             current_mean = [current_mean for _ in range(288)]
             current_std = [current_std for _ in range(288)]
             normalize_input = (input_ - current_mean)/current_std
-            patv = current_df_in[['Patv']].values
+
+            patv = current_df_in[['Patv']].fillna(current_df_in[['Patv']].mean()).values
             patv = np.where(patv < 0 , 0 , patv)
             normalize_input = np.concatenate((normalize_input,patv),axis=1)
-            normalize_input = normalize_input.fillna(normalize_input.mean())
             # prepare checkpoint folder
             folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
@@ -87,7 +90,6 @@ if __name__ == '__main__':
             model.eval()
             with torch.no_grad():
                 input_ = torch.from_numpy(normalize_input).unsqueeze(0)
-                print(input_)
                 output_ = torch.from_numpy(output_)
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
