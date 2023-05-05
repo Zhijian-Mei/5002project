@@ -36,26 +36,32 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
-    torch.set_default_dtype(torch.float32)
+    torch.set_default_dtype(torch.float64)
     subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
-
     uid = args.uid
 
     root_name = f'experiment_{uid}'
 
     final_score = 0
-
+    mean_df = pd.read_csv('data/mean_record.csv')
+    std_df = pd.read_csv('data/std_record.csv')
     in_file_root = f'data/final_phase_test/infile'
     out_file_root = f'data/final_phase_test/outfile'
     for input_index in range(1,143):
         current_index = f'{input_index:04d}'
-        in_file = f'{in_file_root}/{current_index}.csv'
+        in_file = f'{in_file_root}/{current_index}in.csv'
         current = pd.read_csv(in_file)
         dfs = list(current[subset].groupby('TurbID'))
         for item in dfs:
             id = item[0]
             df = item[1]
-
+            current_df = df[len(df)-288:]
+            input_ = current_df.drop(columns=['Patv','TurbID']).values
+            current_mean = mean_df[mean_df.TurbID == id][['Wspd','Wdir']].values[0]
+            current_std = std_df[std_df.TurbID == id][['Wspd','Wdir']].values[0]
+            current_mean = [current_mean for _ in range(288)]
+            current_std = [current_std for _ in range(288)]
+            normalize_input = (input_ - current_mean)/current_std
             # prepare checkpoint folder
             folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
