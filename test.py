@@ -6,7 +6,7 @@ import torch
 from torch import cuda, nn
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+from tqdm import tqdm, trange
 
 from model import MyModel
 import torch.utils.data as data
@@ -36,74 +36,63 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
+    device = torch.device('cpu')
     torch.set_default_dtype(torch.float64)
     subset = ['TurbID', 'Wspd', 'Wdir', 'Patv']
     uid = args.uid
 
     root_name = f'experiment_{uid}'
 
-    final_score = 0
+    score_per_df = []
     mean_df = pd.read_csv('data/mean_record.csv')
     std_df = pd.read_csv('data/std_record.csv')
     in_file_root = f'data/final_phase_test/infile'
     out_file_root = f'data/final_phase_test/outfile'
-    for input_index in range(1,143):
-        current_index = f'{input_index:04d}'
+    print('start testing')
+    for k in trange(1,143):
+        score = 0
+        current_index = f'{k:04d}'
         in_file = f'{in_file_root}/{current_index}in.csv'
-        current = pd.read_csv(in_file)
-        dfs = list(current[subset].groupby('TurbID'))
-        for item in dfs:
-            id = item[0]
-            df = item[1]
-            current_df = df[len(df)-288:]
-            input_ = current_df.drop(columns=['Patv','TurbID']).values
+        out_file = f'{out_file_root}/{current_index}out.csv'
+        current_in = pd.read_csv(in_file)
+        current_out = pd.read_csv(out_file)
+        in_dfs = list(current_in[subset].groupby('TurbID'))
+        out_dfs = list(current_out[subset].groupby('TurbID'))
+        for df_index in range(len(in_dfs)):
+            item_in = in_dfs[df_index]
+            item_out = out_dfs[df_index]
+            id = item_in[0]
+            df_in = item_in[1]
+            df_out = item_out[1]
+            current_df_in = df_in[len(df_in)-288:]
+            current_df_out = df_out
+            input_ = current_df_in.drop(columns=['Patv','TurbID']).values
+            output_ = current_df_out['Patv'].values
             current_mean = mean_df[mean_df.TurbID == id][['Wspd','Wdir']].values[0]
             current_std = std_df[std_df.TurbID == id][['Wspd','Wdir']].values[0]
             current_mean = [current_mean for _ in range(288)]
             current_std = [current_std for _ in range(288)]
             normalize_input = (input_ - current_mean)/current_std
+            patv = current_df_in[['Patv']].values
+            patv = np.where(patv < 0 , 0 , patv)
+            normalize_input = np.concatenate((normalize_input,patv),axis=1)
             # prepare checkpoint folder
             folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
-            checkpoint = torch.load(f'{folder_name}/best_model.pt')
+            checkpoint = torch.load(f'{folder_name}/best_model.pt',map_location=device)
             model = MyModel(args, len(subset) - 1, device)
             model.load_state_dict(checkpoint['model'])
 
-            train = df
-
-            train_size = int(len(train) * 0.8)
-            train_set, eval_set = train[:train_size],train[train_size:]
-
-            print(f'loading data for turbine {id}')
-            # train_dataset = MyDataset(train_set, ws=ws)
-            eval_dataset = MyDataset(eval_set, ws=ws)
-
-            # print('number of train sample: ',len(train_dataset))
-            print('number of eval sample: ',len(eval_dataset))
-
-            # train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
-            eval_loader = DataLoader(eval_dataset, batch_size=batch_size, shuffle=False)
-
-            loss_fct = nn.MSELoss()
-            count = 0
-            eval_loss = 0
-
-            print('start testing')
             model.eval()
             with torch.no_grad():
-                for i in tqdm(
-                        eval_loader,
-                        # mininterval=200
-                ):
-                    input_, output = i[0].to(device), i[1].to(device)
-                    attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-                    predict = model(input_, attention_mask)
+                input_ = torch.from_numpy(normalize_input).unsqueeze(0)
+                output_ = torch.from_numpy(output_)
+                attention_mask = torch.ones((1, 1, ws)).to(device)
+                predict = model(input_, attention_mask)
+                score_t = score_t_abnormal(predict.numpy(),output_.numpy())
+                score+=score_t
+            print(score)
+        score_per_df.append(score)
 
-                    score = score_t_abnormal(predict.cpu().numpy(),output.cpu().numpy()[0])
-                    print(score)
-                    loss = loss_fct(predict, output)
-                    eval_loss += input_.shape[0] * loss.item()
-                    count += input_.shape[0]
 
-                eval_loss = eval_loss / count
 
