@@ -22,6 +22,7 @@ class MyModel(nn.Module):
         self.out = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+        print(input_tensor.dtype)
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor, attention_mask)
         # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
