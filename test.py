@@ -87,14 +87,11 @@ if __name__ == '__main__':
             with torch.no_grad():
                 input_ = torch.from_numpy(normalize_input).unsqueeze(0)
                 output_ = torch.from_numpy(output_)
-                print(input_)
-                print(output_)
-                quit()
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
                 score_t = score_t_abnormal(predict.numpy(),output_.numpy())
+                print(score_t)
                 score+=score_t
-            print(score)
         score_per_df.append(score)
 
 
