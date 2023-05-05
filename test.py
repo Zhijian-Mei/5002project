@@ -94,7 +94,6 @@ if __name__ == '__main__':
 
                 score = score(predict.cpu().numpy(),output.cpu().numpy()[0])
                 print(score)
-                quit()
                 loss = loss_fct(predict, output)
                 eval_loss += input_.shape[0] * loss.item()
                 count += input_.shape[0]
