@@ -18,6 +18,8 @@ def score_t_abnormal(predict, label):
             diffs[i] = predict[i]
         elif np.isnan(label[i]):
             diffs[i] = 0
+        else:
+            diffs[i] = label[i] - predict[i]
     left = np.sqrt(np.square(diffs).mean())
     right = np.square(np.abs(diffs)).mean()
     return round((left + right) / 2,2)
