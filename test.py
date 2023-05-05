@@ -96,7 +96,10 @@ if __name__ == '__main__':
                 score_t = score_t_abnormal(predict.numpy(),output_.numpy())
                 print(f'turbine{id}: ',score_t)
                 score+=score_t
-        score_per_df.append(score)
 
+        score_per_df.append(score)
+    from statistics import mean
+    final_score = round(mean(score_per_df),2)
+    print('model score: ',final_score)
 
 
