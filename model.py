@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as f
 
-
+torch.set_default_dtype(torch.float32)
 class MyModel(nn.Module):
 
     def __init__(self, args, input_size, device):
