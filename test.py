@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
                 score_t = score_t_abnormal(predict.numpy(),output_.numpy())
-                print(score_t)
+                print(f'turbine{id}: ',score_t)
                 score+=score_t
         score_per_df.append(score)
 
