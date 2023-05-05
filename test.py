@@ -76,6 +76,7 @@ if __name__ == '__main__':
             patv = current_df_in[['Patv']].values
             patv = np.where(patv < 0 , 0 , patv)
             normalize_input = np.concatenate((normalize_input,patv),axis=1)
+            normalize_input = normalize_input.fillna(normalize_input.mean())
             # prepare checkpoint folder
             folder_name = f'checkpoint/{root_name}/turbine_{id}'
 
