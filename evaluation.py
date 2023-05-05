@@ -20,6 +20,7 @@ def score_t_abnormal(predict, label):
             diffs[i] = 0
         else:
             diffs[i] = label[i] - predict[i]
+    assert len(diffs) == 288
     left = np.sqrt(np.square(diffs).mean())
     right = np.square(np.abs(diffs)).mean()
     return round((left + right) / 2,2)
