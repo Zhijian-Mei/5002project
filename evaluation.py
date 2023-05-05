@@ -4,10 +4,7 @@ def score(predict, label):
     ## inputs are two numpy array
     predict = predict / 1000
     label = label / 1000
-    print(predict)
-    print(label)
-    quit()
-    print(label - predict)
+    print(np.square(label - predict))
     quit()
     left = np.sqrt(np.square(label - predict).mean())
     right = np.square(np.abs(label - predict)).mean()
