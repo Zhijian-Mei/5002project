@@ -24,8 +24,8 @@ class MyModel(nn.Module):
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor, attention_mask)
-        h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
-        c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
+        # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
+        # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         encoded, (hn, cn) = self.project(encoded)
         # encoded = self.projectUp1(encoded)
         # encoded = self.dropout(encoded)
@@ -80,7 +80,7 @@ class MultiHeadAttention(nn.Module):
 
 class Encoder(nn.Module):
 
-    def __init__(self, dim_inp, dim_out, attention_heads=4, dropout=0.1):
+    def __init__(self, dim_inp, dim_out, attention_heads=2, dropout=0):
         super(Encoder, self).__init__()
 
         self.attention = MultiHeadAttention(attention_heads, dim_inp, dim_out)  # batch_size x sentence size x dim_inp
