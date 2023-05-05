@@ -32,31 +32,31 @@ groups = df.groupby(['TurbID'])
 mean, std = groups.transform("mean"), groups.transform("std")
 
 ### for store mean and std for prediction
-# column_names = list(mean.columns)
-# column_names.append('TurbID')
-#
-# mean_record = pd.DataFrame(columns=column_names)
-# std_record = pd.DataFrame(columns=column_names)
-#
-# mean['TurbID'] = data['TurbID']
-# std['TurbID'] = data['TurbID']
-#
-# means = list(mean.groupby('TurbID'))
-# stds = list(std.groupby('TurbID'))
-# for idx,item in means:
-#     mean_record = pd.concat([mean_record,item.iloc[[0]]])
-# mean_record = mean_record.reset_index(drop=True)
-# mean_record.to_csv('data/mean_record.csv',index=False)
-#
-# for idx,item in stds:
-#     std_record = pd.concat([std_record,item.iloc[[0]]])
-# std_record = std_record.reset_index(drop=True)
-# std_record.to_csv('data/std_record.csv',index=False)
-#
-# print(mean_record)
-# print(std_record)
-#
-# quit()
+column_names = list(mean.columns)
+column_names.append('TurbID')
+
+mean_record = pd.DataFrame(columns=column_names)
+std_record = pd.DataFrame(columns=column_names)
+
+mean['TurbID'] = data['TurbID']
+std['TurbID'] = data['TurbID']
+
+means = list(mean.groupby('TurbID'))
+stds = list(std.groupby('TurbID'))
+for idx,item in means:
+    mean_record = pd.concat([mean_record,item.iloc[[0]]])
+mean_record = mean_record.reset_index(drop=True)
+mean_record.to_csv('data/mean_record.csv',index=False)
+
+for idx,item in stds:
+    std_record = pd.concat([std_record,item.iloc[[0]]])
+std_record = std_record.reset_index(drop=True)
+std_record.to_csv('data/std_record.csv',index=False)
+
+print(mean_record)
+print(std_record)
+
+quit()
 ###
 
 normalized_df = (df[mean.columns] - mean) / std
