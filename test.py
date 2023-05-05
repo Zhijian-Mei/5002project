@@ -86,6 +86,7 @@ if __name__ == '__main__':
             model.eval()
             with torch.no_grad():
                 input_ = torch.from_numpy(normalize_input).unsqueeze(0)
+                print(input_)
                 output_ = torch.from_numpy(output_)
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
