@@ -13,7 +13,7 @@ from tqdm import tqdm
 from model import MyModel
 import torch.utils.data as data
 from data_utils import MyDataset
-from evaluation import score
+from evaluation import score_t
 
 
 def get_args():

@@ -1,6 +1,6 @@
 import numpy as np
 np.set_printoptions(suppress=True)
-def score(predict, label):
+def score_t(predict, label):
     ## inputs are two numpy array
     predict = predict / 1000
     label = label / 1000

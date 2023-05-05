@@ -11,7 +11,7 @@ from tqdm import tqdm
 from model import MyModel
 import torch.utils.data as data
 from data_utils import MyDataset
-from evaluation import score
+from evaluation import score_t
 
 
 def get_args():
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                 attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
                 predict = model(input_, attention_mask)
 
-                score = score(predict.cpu().numpy(),output.cpu().numpy()[0])
+                score = score_t(predict.cpu().numpy(),output.cpu().numpy()[0])
                 print(score)
                 loss = loss_fct(predict, output)
                 eval_loss += input_.shape[0] * loss.item()
