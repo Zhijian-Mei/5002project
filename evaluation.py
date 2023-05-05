@@ -13,7 +13,6 @@ def score_t_abnormal(predict, label):
     predict = predict / 1000
     label = label / 1000
     diffs = np.empty_like(label)
-    print(label)
     for i in range(label.shape[0]):
         if label[i] <= 0:
             diffs[i] = predict[i]
@@ -22,8 +21,6 @@ def score_t_abnormal(predict, label):
         else:
             diffs[i] = label[i] - predict[i]
     assert len(diffs) == 288
-    print(diffs)
-    quit()
     left = np.sqrt(np.square(diffs).mean())
     right = np.square(np.abs(diffs)).mean()
     return round((left + right) / 2,2)
