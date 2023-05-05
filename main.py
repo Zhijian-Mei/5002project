@@ -13,7 +13,7 @@ from tqdm import tqdm
 from model import MyModel
 import torch.utils.data as data
 from data_utils import MyDataset
-from evaluation import *
+from evaluation import score_t
 
 
 def get_args():
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     ws = args.ws
     device = torch.device(f'cuda:{gpu}' if cuda.is_available() else 'cpu')
-    torch.set_default_dtype(torch.float32)
+    torch.set_default_dtype(torch.float64)
     if args.debug:
         df = pd.read_csv('data/clean_fill_data.csv')[:100000]
     else:
