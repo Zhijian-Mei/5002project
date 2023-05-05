@@ -23,4 +23,8 @@ def score_t_abnormal(predict, label):
     assert len(diffs) == 288
     left = np.sqrt(np.square(diffs).mean())
     right = np.square(np.abs(diffs)).mean()
-    return round((left + right) / 2,2)
+    result = round((left + right) / 2,2)
+    if np.isnan(result):
+        print(diffs)
+        quit()
+    return result
