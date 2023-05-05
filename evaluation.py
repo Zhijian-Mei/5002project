@@ -26,5 +26,7 @@ def score_t_abnormal(predict, label):
     result = round((left + right) / 2,2)
     if np.isnan(result):
         print(diffs)
+        print(predict)
+        print(label)
         quit()
     return result
