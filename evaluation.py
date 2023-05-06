@@ -4,8 +4,8 @@ def score_t(predict, label):
     ## inputs are two numpy array
     predict = predict / 1000
     label = label / 1000
-    left = np.sqrt(np.square(label - predict).mean())
-    right = np.square(np.abs(label - predict)).mean()
+    left = rmse(label - predict)
+    right = mae(label - predict)
     return round((left + right) / 2,2)
 
 def score_t_abnormal(predict, label):
@@ -21,8 +21,8 @@ def score_t_abnormal(predict, label):
         else:
             diffs[i] = label[i] - predict[i]
     assert len(diffs) == 288
-    left = np.sqrt(np.square(diffs).mean())
-    right = np.square(np.abs(diffs)).mean()
+    left = rmse(diffs)
+    right = mae(diffs)
     result = round((left + right) / 2,2)
     if np.isnan(result):
         print(diffs)
@@ -30,3 +30,9 @@ def score_t_abnormal(predict, label):
         print(label)
         quit()
     return result
+
+def rmse(diffs):
+    return np.sqrt(np.square(diffs).mean())
+
+def mae(diffs):
+    return np.square(np.abs(diffs)).mean()
