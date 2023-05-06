@@ -64,8 +64,9 @@ class MyModel(nn.Module):
         outputs = torch.zeros(y.shape).to(self.device)
 
         # last hidden state of the encoder is used as the initial hidden state of the decoder
-        hidden, cell = self.encoder(x)
-        print(hidden.shape)
+        output,(hidden, cell) = self.encoder(x)
+        print(output.shape)
+        quit()
 
         # first input to decoder is last coordinates of x
         decoder_input = x[:, -1, :]
@@ -117,9 +118,9 @@ class Encoder(nn.Module):
         # embedded: [sequence len, batch size, embedding size]
         embedded = f.relu(self.linear(x))
 
-        output, (hidden, cell) = self.rnn(embedded)
+        return self.rnn(embedded)
 
-        return hidden, cell
+
 
 
 class Decoder(nn.Module):
