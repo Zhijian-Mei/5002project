@@ -11,6 +11,8 @@ def score_t(predict, label):
 def score_t_abnormal(predict, label):
     ## inputs are two numpy array
     predict = predict / 1000
+    print(predict)
+    
     label = label / 1000
     diffs = np.empty_like(label)
     for i in range(label.shape[0]):
