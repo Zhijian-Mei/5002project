@@ -22,11 +22,8 @@ class MyModel(nn.Module):
         self.out = nn.ReLU()
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
-        input_tensor = self.emb(input_tensor)
-        print(input_tensor.shape)
-        encoded = self.extract(input_tensor, attention_mask)
-        print(encoded.shape)
-        quit()
+        encoded = self.emb(input_tensor)
+        # encoded = self.extract(input_tensor, attention_mask)
         # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         # encoded, (hn, cn) = self.project(encoded)
