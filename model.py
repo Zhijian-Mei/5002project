@@ -42,7 +42,9 @@ class MyModel(nn.Module):
         super().__init__()
         self.device = device
         self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
-        self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
+        # self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
+        self.linear1 = nn.Linear(input_size,1024)
+        self.linear2 = nn.Linear(1024,1)
 
 
     def forward(self, x, y, teacher_forcing_ratio=0.5):
@@ -59,41 +61,16 @@ class MyModel(nn.Module):
         batch_size = x.shape[1]
         target_len = y.shape[0]
 
-
-        # tensor to store decoder outputs of each time step
-        outputs = torch.zeros(y.shape).to(self.device)
-
         # last hidden state of the encoder is used as the initial hidden state of the decoder
         output,(hidden, cell) = self.encoder(x)
+
+        output = f.relu(self.linear1(output))
+        output = f.relu(self.linear2(output))
         print(output.shape)
-        quit()
+        return output
 
-        # first input to decoder is last coordinates of x
-        decoder_input = x[:, -1, :]
-        print(x.shape)
-        print(decoder_input.shape)
 
-        output, hidden, cell = self.decoder(x,hidden,cell)
-        print(output.shape)
-        quit()
 
-        for i in range(target_len):
-            # run decode for one time step
-            output, hidden, cell = self.decoder(decoder_input, hidden, cell)
-            print(output.shape)
-            quit()
-            # place predictions in a tensor holding predictions for each time step
-            outputs[i] = output
-
-            # decide if we are going to use teacher forcing or not
-            teacher_forcing = random.random() < teacher_forcing_ratio
-
-            # output is the same shape as input, [batch_size, feature size]
-            # so we can use output directly as input or use true lable depending on
-            # teacher_forcing is true or not
-            decoder_input = y[i] if teacher_forcing else output
-
-        return outputs
 
 class Encoder(nn.Module):
     def __init__(self,
