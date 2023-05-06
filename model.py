@@ -29,9 +29,7 @@ class MyModel(nn.Module):
         # encoded, (hn, cn) = self.project(encoded)
         encoded = self.projectUp1(encoded)
         encoded = self.relu0(encoded)
-        print(encoded)
         encoded = self.project(encoded)
-        print(encoded)
         output = self.out(encoded).squeeze()
         # output = self.out1(output)
         return output
