@@ -95,10 +95,10 @@ if __name__ == '__main__':
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
                 score_t = score_t_abnormal(predict.numpy(), output_.numpy())
-                # print(f'turbine{id}: ',score_t)
+                print(f'turbine{id}: ',score_t)
                 score += score_t
                 count += 1
-            print(score / count)
+            # print(score / count)
         score_per_df.append(score)
     from statistics import mean
 
