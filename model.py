@@ -13,8 +13,8 @@ class MyModel(nn.Module):
         self.bidirectional = True
         self.emb = nn.Linear(input_size, args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size, args.hidden_size,device)
-        self.projectUp1 = nn.Linear(args.hidden_size,256).to(device)
-        self.project = nn.Linear(256,1).to(device)
+        self.projectUp1 = nn.Linear(args.hidden_size,2).to(device)
+        self.project = nn.Linear(2,1).to(device)
         # self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers, batch_first=True,
         #                        bidirectional=self.bidirectional).to(device)
         # self.out = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
@@ -23,11 +23,15 @@ class MyModel(nn.Module):
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
         encoded = self.extract(input_tensor, attention_mask)
+        print(encoded)
         # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         # encoded, (hn, cn) = self.project(encoded)
         encoded = self.projectUp1(encoded)
+        print(encoded)
         encoded = self.project(encoded)
+        print(encoded)
+        quit()
         output = self.out(encoded).squeeze()
         # output = self.out1(output)
         return output
