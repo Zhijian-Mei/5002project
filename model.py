@@ -72,6 +72,10 @@ class MyModel(nn.Module):
         print(x.shape)
         print(decoder_input.shape)
 
+        output, hidden, cell = self.decoder(x,hidden,cell)
+        print(output.shape)
+        quit()
+
         for i in range(target_len):
             # run decode for one time step
             output, hidden, cell = self.decoder(decoder_input, hidden, cell)
