@@ -43,8 +43,8 @@ class MyModel(nn.Module):
         self.device = device
         self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
         # self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
-        self.linear1 = nn.Linear(input_size,1024)
-        self.linear2 = nn.Linear(1024,1)
+        self.linear1 = nn.Linear(input_size,1024).to(device)
+        self.linear2 = nn.Linear(1024,1).to(device)
 
 
     def forward(self, x, y, teacher_forcing_ratio=0.5):
