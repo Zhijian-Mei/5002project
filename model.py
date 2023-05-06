@@ -120,17 +120,19 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self,
+                 input_size = 3,
                  output_size=1,
                  embedding_size=32,
                  hidden_size=32,
                  n_layers=2,
                  dropout=0.1):
         super().__init__()
+        self.input_size = input_size
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.n_layers = n_layers
 
-        self.embedding = nn.Linear(output_size, embedding_size)
+        self.embedding = nn.Linear(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout,batch_first=True,bidirectional=True)
         self.linear = nn.Linear(hidden_size, output_size)
         self.dropout = nn.Dropout(dropout)
