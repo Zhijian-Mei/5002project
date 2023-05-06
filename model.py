@@ -43,7 +43,7 @@ class MyModel(nn.Module):
         self.device = device
         self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2,bi=bi).to(device)
         # self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
-        self.linear1 = nn.Linear(input_size if not bi else input_size * 2,1024).to(device)
+        self.linear1 = nn.Linear(args.hidden_size if not bi else args.hidden_size * 2,1024).to(device)
         self.linear2 = nn.Linear(1024,1).to(device)
 
 
@@ -67,9 +67,8 @@ class MyModel(nn.Module):
 
         output = f.relu(self.linear1(output))
         output = f.relu(self.linear2(output))
-        print(output.shape)
-        quit()
-        return output
+
+        return output.squeeze()
 
 
 

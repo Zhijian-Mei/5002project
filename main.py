@@ -98,6 +98,8 @@ if __name__ == '__main__':
                 input_, output = i[0].to(device).float(), i[1].to(device).float()
 
                 predict = model(input_, output)
+
+
                 loss = loss_fct(predict, output)
 
                 optimizer.zero_grad()
