@@ -41,8 +41,9 @@ class MyModel(nn.Module):
     def __init__(self,args,input_size, device):
         super().__init__()
         self.device = device
-        self.encoder = Encoder().to(device)
-        self.decoder = Decoder().to(device)
+        self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
+        self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
+
 
     def forward(self, x, y, teacher_forcing_ratio=0.5):
         """
@@ -201,26 +202,26 @@ class MultiHeadAttention(nn.Module):
         return self.norm(scores)
 
 
-class Encoder(nn.Module):
-
-    def __init__(self, dim_inp, dim_out, attention_heads=2, dropout=0):
-        super(Encoder, self).__init__()
-
-        self.attention = MultiHeadAttention(attention_heads, dim_inp, dim_out)  # batch_size x sentence size x dim_inp
-        self.feed_forward = nn.Sequential(
-            nn.Linear(dim_inp, dim_out),
-            nn.Dropout(dropout),
-            nn.GELU(),
-            nn.Linear(dim_out, dim_inp),
-            nn.Dropout(dropout)
-        )
-        self.norm = nn.LayerNorm(dim_inp)
-
-    def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
-        context = self.attention(input_tensor, attention_mask)
-        res = self.feed_forward(context)
-        return self.norm(res)
-
+# class Encoder(nn.Module):
+#
+#     def __init__(self, dim_inp, dim_out, attention_heads=2, dropout=0):
+#         super(Encoder, self).__init__()
+#
+#         self.attention = MultiHeadAttention(attention_heads, dim_inp, dim_out)  # batch_size x sentence size x dim_inp
+#         self.feed_forward = nn.Sequential(
+#             nn.Linear(dim_inp, dim_out),
+#             nn.Dropout(dropout),
+#             nn.GELU(),
+#             nn.Linear(dim_out, dim_inp),
+#             nn.Dropout(dropout)
+#         )
+#         self.norm = nn.LayerNorm(dim_inp)
+#
+#     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
+#         context = self.attention(input_tensor, attention_mask)
+#         res = self.feed_forward(context)
+#         return self.norm(res)
+#
 
 class BERT(nn.Module):
     def __init__(self, dim_inp, dim_out, device,attention_heads=1, num_blocks = 1):
