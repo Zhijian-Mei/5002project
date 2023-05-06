@@ -66,10 +66,12 @@ class MyModel(nn.Module):
         # last hidden state of the encoder is used as the initial hidden state of the decoder
         hidden, cell = self.encoder(x)
         print(hidden.shape)
-        quit()
+
         # first input to decoder is last coordinates of x
         decoder_input = x[-1, :, :]
-
+        print(x.shape)
+        print(decoder_input.shape)
+        quit()
         for i in range(target_len):
             # run decode for one time step
             output, hidden, cell = self.decoder(decoder_input, hidden, cell)
@@ -109,10 +111,9 @@ class Encoder(nn.Module):
         """
         # embedded: [sequence len, batch size, embedding size]
         embedded = f.relu(self.linear(x))
-        print(embedded.shape)
+
         output, (hidden, cell) = self.rnn(embedded)
-        print(hidden.shape)
-        quit()
+
         return hidden, cell
 
 
