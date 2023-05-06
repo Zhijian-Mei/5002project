@@ -9,7 +9,7 @@ class MyDataset(Dataset):
         self.input = []
         self.output = []
         current = df.drop(columns=['TurbID']).reset_index(drop=True)
-        for j in trange(len(current) - offset - offset + 1):
+        for j in range(len(current) - offset - offset + 1):
             input_ = current[j:j + offset].values
             output = current[j + offset:j + offset + offset]['Patv'].values
             self.input.append(input_)
