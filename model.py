@@ -31,7 +31,6 @@ class MyModel(nn.Module):
         print(encoded)
         encoded = self.project(encoded)
         print(encoded)
-        quit()
         output = self.out(encoded).squeeze()
         # output = self.out1(output)
         return output
