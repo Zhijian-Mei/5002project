@@ -38,12 +38,12 @@ torch.set_default_dtype(torch.float32)
 
 
 class MyModel(nn.Module):
-    def __init__(self,args,input_size, device):
+    def __init__(self,args,input_size, device,bi=True):
         super().__init__()
         self.device = device
-        self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
+        self.encoder = Encoder(input_size=input_size,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2,bi=bi).to(device)
         # self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2).to(device)
-        self.linear1 = nn.Linear(input_size,1024).to(device)
+        self.linear1 = nn.Linear(input_size if not bi else input_size * 2,1024).to(device)
         self.linear2 = nn.Linear(1024,1).to(device)
 
 
@@ -64,9 +64,11 @@ class MyModel(nn.Module):
         # last hidden state of the encoder is used as the initial hidden state of the decoder
         output,(hidden, cell) = self.encoder(x)
 
+
         output = f.relu(self.linear1(output))
         output = f.relu(self.linear2(output))
         print(output.shape)
+        quit()
         return output
 
 
@@ -78,13 +80,15 @@ class Encoder(nn.Module):
                  embedding_size = 32,
                  hidden_size = 32,
                  n_layers = 2,
-                 dropout = 0.1):
+                 dropout = 0.1,
+                 bi = True,
+                 ):
         super().__init__()
         self.hidden_size = hidden_size
         self.n_layers = n_layers
         self.linear = nn.Linear(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers,
-                           dropout = dropout,batch_first=True,bidirectional=True)
+                           dropout = dropout,batch_first=bi,bidirectional=True)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
