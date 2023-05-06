@@ -59,6 +59,9 @@ class MyModel(nn.Module):
         batch_size = x.shape[1]
         target_len = y.shape[0]
 
+        print(x.shape)
+        print(y.shape)
+        quit()
         # tensor to store decoder outputs of each time step
         outputs = torch.zeros(y.shape).to(self.device)
 
@@ -98,7 +101,7 @@ class Encoder(nn.Module):
         self.n_layers = n_layers
         self.linear = nn.Linear(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers,
-                           dropout = dropout,bidirectional=True)
+                           dropout = dropout,batch_first=True,bidirectional=True)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):

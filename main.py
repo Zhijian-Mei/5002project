@@ -96,8 +96,8 @@ if __name__ == '__main__':
                     # mininterval=200
             ):
                 input_, output = i[0].to(device).float(), i[1].to(device).float()
-                attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
-                predict = model(input_, attention_mask)
+
+                predict = model(input_, output)
                 loss = loss_fct(predict, output)
 
                 optimizer.zero_grad()
