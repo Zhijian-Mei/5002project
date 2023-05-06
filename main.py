@@ -20,7 +20,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-batch_size', type=int, default=512)
     parser.add_argument('-gpu', type=str, default='0')
-    parser.add_argument('-hidden_size', type=int, default=64)
+    parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=0)
@@ -93,7 +93,7 @@ if __name__ == '__main__':
             model.train()
             for i in tqdm(
                     train_loader,
-                    mininterval=200
+                    # mininterval=200
             ):
                 input_, output = i[0].to(device).float(), i[1].to(device).float()
                 attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
             with torch.no_grad():
                 for i in tqdm(
                         eval_loader,
-                        mininterval=200
+                        # mininterval=200
                 ):
                     input_, output = i[0].to(device).float(), i[1].to(device).float()
                     attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
