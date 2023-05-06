@@ -14,6 +14,7 @@ class MyModel(nn.Module):
         self.emb = nn.Linear(input_size, args.hidden_size).to(device)
         self.extract = BERT(args.hidden_size, args.hidden_size,device)
         self.projectUp1 = nn.Linear(args.hidden_size,2).to(device)
+        self.relu0 = nn.ReLU()
         self.project = nn.Linear(2,1).to(device)
         # self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers, batch_first=True,
         #                        bidirectional=self.bidirectional).to(device)
@@ -22,12 +23,15 @@ class MyModel(nn.Module):
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
         input_tensor = self.emb(input_tensor)
+        print(input_tensor.shape)
         encoded = self.extract(input_tensor, attention_mask)
-        print(encoded)
+        print(encoded.shape)
+        quit()
         # h0 = torch.zeros(self.lstm_layers,encoded.shape[0],  self.args.hidden_size).to(self.device)
         # c0 = torch.zeros(self.lstm_layers,encoded.shape[0], self.args.hidden_size).to(self.device)
         # encoded, (hn, cn) = self.project(encoded)
         encoded = self.projectUp1(encoded)
+        encoded = self.relu0(encoded)
         print(encoded)
         encoded = self.project(encoded)
         print(encoded)
