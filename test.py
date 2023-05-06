@@ -18,7 +18,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-batch_size', type=int, default=1)
     parser.add_argument('-gpu', type=str, default='0')
-    parser.add_argument('-hidden_size', type=int, default=64)
+    parser.add_argument('-hidden_size', type=int, default=32)
     parser.add_argument('-seed', type=int, default=42)
     parser.add_argument('-ws', type=int, default=288)
     parser.add_argument('-debug', type=int, default=0)
