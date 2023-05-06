@@ -19,7 +19,7 @@ class MyModel(nn.Module):
         # self.dropout = nn.Dropout(0.1)
         self.project = nn.LSTM(args.hidden_size, args.hidden_size, self.lstm_layers, batch_first=True,
                                bidirectional=self.bidirectional).to(device)
-        self.out0 = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
+        self.out = nn.Linear(args.hidden_size * 2 if self.bidirectional else args.hidden_size, 1).to(device)
         # self.out1 = nn.ReLU()
 
     def forward(self, input_tensor: torch.Tensor, attention_mask: torch.Tensor = None):
@@ -31,7 +31,7 @@ class MyModel(nn.Module):
         # encoded = self.projectUp1(encoded)
         # encoded = self.dropout(encoded)
         # encoded = self.projectUp2(encoded)
-        output = self.out0(encoded).squeeze()
+        output = self.out(encoded).squeeze()
         # output = self.out1(output)
         return output
 
