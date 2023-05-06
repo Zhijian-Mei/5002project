@@ -71,11 +71,12 @@ class MyModel(nn.Module):
         decoder_input = x[-1, :, :]
         print(x.shape)
         print(decoder_input.shape)
-        quit()
+
         for i in range(target_len):
             # run decode for one time step
             output, hidden, cell = self.decoder(decoder_input, hidden, cell)
-
+            print(output.shape)
+            quit()
             # place predictions in a tensor holding predictions for each time step
             outputs[i] = output
 
