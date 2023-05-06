@@ -59,9 +59,7 @@ class MyModel(nn.Module):
         batch_size = x.shape[1]
         target_len = y.shape[0]
 
-        print(x.shape)
-        print(y.shape)
-        quit()
+
         # tensor to store decoder outputs of each time step
         outputs = torch.zeros(y.shape).to(self.device)
 
@@ -111,9 +109,10 @@ class Encoder(nn.Module):
         """
         # embedded: [sequence len, batch size, embedding size]
         embedded = f.relu(self.linear(x))
-
+        print(embedded.shape)
         output, (hidden, cell) = self.rnn(embedded)
-
+        print(hidden.shape)
+        quit()
         return hidden, cell
 
 
