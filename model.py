@@ -40,9 +40,9 @@ torch.set_default_dtype(torch.float32)
 class MyModel(nn.Module):
     def __init__(self,args,input_size, device):
         super().__init__()
-        self.encoder = Encoder(input_size=3,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2)
-        self.decoder = Decoder(output_size=1,embedding_size=args.hidden_size,hidden_size=args.hidden_size,n_layers=2)
         self.device = device
+        self.encoder = Encoder().to(device)
+        self.decoder = Decoder().to(device)
 
     def forward(self, x, y, teacher_forcing_ratio=0.5):
         """
