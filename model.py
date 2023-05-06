@@ -98,7 +98,7 @@ class Encoder(nn.Module):
         self.n_layers = n_layers
         self.linear = nn.Linear(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers,
-                           dropout = dropout,batch_first=True,bidirectional=True)
+                           dropout = dropout,bidirectional=True)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
