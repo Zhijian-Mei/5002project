@@ -133,7 +133,7 @@ class Decoder(nn.Module):
         self.n_layers = n_layers
 
         self.embedding = nn.Linear(input_size, embedding_size)
-        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout,batch_first=True,bidirectional=True)
+        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout,bidirectional=True)
         self.linear = nn.Linear(hidden_size, output_size)
         self.dropout = nn.Dropout(dropout)
 
