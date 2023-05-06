@@ -93,7 +93,7 @@ if __name__ == '__main__':
             model.train()
             for i in tqdm(
                     train_loader,
-                    # mininterval=200
+                    mininterval=200
             ):
                 input_, output = i[0].to(device).float(), i[1].to(device).float()
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
             with torch.no_grad():
                 for i in tqdm(
                         eval_loader,
-                        # mininterval=200
+                        mininterval=200
                 ):
                     input_, output = i[0].to(device).float(), i[1].to(device).float()
                     attention_mask = torch.ones((input_.shape[0], 1, ws)).to(device)
