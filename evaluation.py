@@ -24,12 +24,9 @@ def score_t_abnormal(predict, label):
     left = rmse(diffs)
     right = mae(diffs)
     result = round((left + right) / 2,2)
-    if np.isnan(result):
-        print(diffs)
-        print(predict)
-        print(label)
-        quit()
-    return result
+    print(left,right,result)
+    quit()
+    return left,right,result
 
 def rmse(diffs):
     return np.sqrt(np.square(diffs).mean())
