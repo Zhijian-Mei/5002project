@@ -44,13 +44,17 @@ if __name__ == '__main__':
     root_name = f'experiment_{uid}'
 
     score_per_df = []
+    rmse_per_df = []
+    mae_per_df = []
     mean_df = pd.read_csv('data/mean_record.csv')
     std_df = pd.read_csv('data/std_record.csv')
     in_file_root = f'data/final_phase_test/infile'
     out_file_root = f'data/final_phase_test/outfile'
     print('start testing')
-    for k in trange(1, 143):
+    for k in trange(1, 143): # test for all 143 test files.
         score = 0
+        rmse = 0
+        mae = 0
         count = 0
         current_index = f'{k:04d}'
         in_file = f'{in_file_root}/{current_index}in.csv'
@@ -76,7 +80,7 @@ if __name__ == '__main__':
             current_std = std_df[std_df.TurbID == id][['Wspd', 'Wdir']].values[0]
             current_mean = [current_mean for _ in range(288)]
             current_std = [current_std for _ in range(288)]
-            normalize_input = (input_ - current_mean) / current_std
+            normalize_input = (input_ - current_mean) / current_std  # normalize the test data by training data's mean and standard deviation
 
             patv = current_df_in[['Patv']].fillna(current_df_in[['Patv']].mean()).values
             patv = np.where(patv < 0, 0, patv)
@@ -94,13 +98,21 @@ if __name__ == '__main__':
                 output_ = torch.from_numpy(output_)
                 attention_mask = torch.ones((1, 1, ws)).to(device)
                 predict = model(input_, attention_mask)
-                score_t = score_t_abnormal(predict.numpy(), output_.numpy())
-                print(f'turbine{id}: ',score_t)
+                rmse_t,mae_t,score_t = score_t_abnormal(predict.numpy(), output_.numpy())
+                # print(f'turbine{id}: ',score_t)
                 score += score_t
+                rmse+= rmse_t
+                mae += mae_t
                 count += 1
             # print(score / count)
+        rmse_per_df.append(rmse)
         score_per_df.append(score)
+        mae_per_df.append(mae)
     from statistics import mean
 
     final_score = round(mean(score_per_df), 2)
+    final_rmse = round(mean(rmse_per_df),2)
+    final_mae = round(mean(mae_per_df),2)
     print('model score: ', final_score)
+    print('rmse: ', final_rmse)
+    print('mae: ', final_mae)
