@@ -23,9 +23,7 @@ def score_t_abnormal(predict, label):
     assert len(diffs) == 288
     left = rmse(diffs)
     right = mae(diffs)
-    result = round((left + right) / 2,2)
-    print(left,right,result)
-    quit()
+    result = (left + right) / 2
     return left,right,result
 
 def rmse(diffs):
