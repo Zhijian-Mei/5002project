@@ -30,4 +30,4 @@ def rmse(diffs):
     return np.sqrt(np.square(diffs).mean())
 
 def mae(diffs):
-    return np.square(np.abs(diffs)).mean()
+    return np.abs(diffs).mean()
